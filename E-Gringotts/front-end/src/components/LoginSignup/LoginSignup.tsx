@@ -2,7 +2,9 @@ import email_icon from "./email.png";
 import password_icon from "./password.png";
 import user_icon from "./person.png";
 import "./LoginSignup.css";
+import LoginMain from "../LoginMainPages/login-main";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginSignup = () => {
   const [action, setAction] = useState("Login");
@@ -12,17 +14,35 @@ const LoginSignup = () => {
   const [age, setAge] = useState("");
   const [dob, setDob] = useState("");
   const [pin, setPin] = useState("");
+  const [currentPage, setCurrentPage] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Perform login logic using email and password
+
+    if (email.trim() === "" || password.trim() === "" || pin.trim() === "") {
+      alert("Please enter all fields.");
+      return;
+    }
     console.log("Logging in with email:", email, "and password:", password);
+    navigate("/login-main");
   };
 
   const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Perform registration logic using email, password, name, age, dob, and pin
+    if (
+      email.trim() === "" ||
+      password.trim() === "" ||
+      age.trim() === "" ||
+      dob.trim() === "" ||
+      pin.trim() === "" ||
+      name.trim() === ""
+    ) {
+      alert("Please enter all fields.");
+      return;
+    }
     console.log("Registering with email:", email, "and password:", password);
+    navigate("/login-main");
   };
 
   const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +51,10 @@ const LoginSignup = () => {
       setPin(value);
     }
   };
+
+  if (currentPage === "/login-main") {
+    return <LoginMain />; // Redirect to /login-main if currentPage is /login-main
+  }
 
   return (
     <div className="background">
@@ -58,6 +82,16 @@ const LoginSignup = () => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="input">
+                <img src={password_icon} alt="" />
+                <input
+                  type="password"
+                  placeholder="6 digit secure pin"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value)}
+                  maxLength={6}
                 />
               </div>
               <button
@@ -120,7 +154,10 @@ const LoginSignup = () => {
                   type="password"
                   placeholder="6 digit secure pin"
                   value={pin}
-                  onChange={(e) => setPin(e.target.value)}
+                  onChange={(e) => {
+                    setPin(e.target.value);
+                    handlePinChange(e);
+                  }}
                   maxLength={6}
                 />
               </div>
