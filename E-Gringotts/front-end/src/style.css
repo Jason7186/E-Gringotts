@@ -1,0 +1,72 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.nav {
+    background-color: rgba(24, 0, 53, 0.863);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 1rem;
+    height: 80px;
+    z-index: 10; /* Keep the navbar above other elements */
+    position: fixed; /* Fix the navbar at the top */
+    width: 100%; /* Make the navbar full width */
+}
+
+.site-title {
+    font-size: 2rem;
+}
+
+.nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    justify-content: center;
+}
+
+.nav a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.nav li a:link,
+.nav li a:visited {
+    color: inherit;
+    text-decoration: none;
+}
+
+.nav li:hover {
+    border-bottom: 3px solid  rgba(195, 12, 113, 0.9);
+}
+
+.logoPic{
+    height: 60px;
+}
+
+.purpleButton{
+    background-color: #6504a5; /* Dark purple */
+    border-radius: 30px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.purpleButton:link,
+.purpleButton:visited {
+    color: inherit;
+    text-decoration: none;
+}
+
+.purpleButton:hover {
+    background-color: rgba(195, 12, 113, 0.9);
+}
