@@ -1,0 +1,103 @@
+.app {
+    position: relative;
+  }
+
+  .background {
+    background-image: url('MainPageBackground.png'); 
+    position: relative;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    height: 100vh;
+    z-index: 0;
+  }
+  
+  .bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background-color: rgba(24, 0, 53, 0.863); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  button {
+    margin: 0 10px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+  }
+
+  .transparent {
+    background-color: rgba(255, 255, 255, 0); /* Transparent white */
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-bottom: 2px solid transparent; /* Transparent bottom border initially */
+    transition: border-color 0.1; /* Smooth transition for border color change */
+  }
+  
+  .purple {
+    background-color: #6504a5; /* Dark purple */
+    border-radius: 30px;
+    padding: 12px 30px;
+    position: absolute;
+    top: 10;
+    right: 20px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+  }
+
+  .container {
+    height: 100vh; /* Set height to 100% of viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  
+  .logo {
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    height: 60px; /* Set the height of the logo */
+  }
+
+  .transparent:hover {
+    border-bottom-color: rgba(195, 12, 113, 0.9);
+  }
+
+  .logo img {
+    width: 200px;
+    height: 50px;
+  }
+
+  .center-text {
+    font-size: 63px; /* Adjust the font size as needed */
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1; /* Ensure the text appears above the background */
+    color: white;
+    font-weight: bold;
+  }
+
+  .transparent-text{
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  .transparent-logo {
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  .purple:hover{
+    background-color: rgba(195, 12, 113, 0.9);
+  }
+
+  
+  
