@@ -1,7 +1,7 @@
 import React from "react";
 
-const loginhelp = () => {
+const Loginhelp = () => {
   return <div>login-help</div>;
 };
 
-export default loginhelp;
+export default Loginhelp;

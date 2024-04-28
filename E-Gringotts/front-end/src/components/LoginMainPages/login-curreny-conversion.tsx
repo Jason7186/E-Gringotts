@@ -1,7 +1,7 @@
 import React from "react";
 
-const loginCurrenyConversion = () => {
+const LoginCurrenyConversion = () => {
   return <div>login-curreny-conversion</div>;
 };
 
-export default loginCurrenyConversion;
+export default LoginCurrenyConversion;

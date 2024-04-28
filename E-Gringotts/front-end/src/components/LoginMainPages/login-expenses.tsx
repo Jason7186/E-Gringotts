@@ -1,7 +1,11 @@
 import React from "react";
 
-const loginExpenses = () => {
-  return <div>loginExpens</div>;
+const LoginExpenses = () => {
+  return (
+    <>
+      <div>loginExpenses</div>
+    </>
+  );
 };
 
-export default loginExpenses;
+export default LoginExpenses;

@@ -2,7 +2,7 @@ import "../App.css";
 
 const LoginMain = () => {
   const mainText = () => {
-    return "The first digital bank. \n Register now.";
+    return "The first digital bank at your service.";
   };
 
   return (

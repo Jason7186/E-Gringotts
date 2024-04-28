@@ -1,7 +1,7 @@
 import React from "react";
 
-const loginTransaction = () => {
+const LoginTransaction = () => {
   return <div>login-transaction</div>;
 };
 
-export default loginTransaction;
+export default LoginTransaction;
