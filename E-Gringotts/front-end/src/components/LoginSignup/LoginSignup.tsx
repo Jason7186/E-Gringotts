@@ -6,7 +6,11 @@ import LoginMain from "../LoginMainPages/login-main";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LoginSignup = () => {
+interface LoginSignupProps {
+  setIsLoggedIn: React.Dispatch<boolean>;
+}
+
+const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
   const [action, setAction] = useState("Login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +18,6 @@ const LoginSignup = () => {
   const [age, setAge] = useState("");
   const [dob, setDob] = useState("");
   const [pin, setPin] = useState("");
-  const [currentPage, setCurrentPage] = useState<string>("");
   const navigate = useNavigate();
 
   const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,6 +28,7 @@ const LoginSignup = () => {
       return;
     }
     console.log("Logging in with email:", email, "and password:", password);
+    setIsLoggedIn(true);
     navigate("/login-main");
   };
 
@@ -42,6 +46,7 @@ const LoginSignup = () => {
       return;
     }
     console.log("Registering with email:", email, "and password:", password);
+    setIsLoggedIn(true);
     navigate("/login-main");
   };
 
@@ -51,10 +56,6 @@ const LoginSignup = () => {
       setPin(value);
     }
   };
-
-  if (currentPage === "/login-main") {
-    return <LoginMain />; // Redirect to /login-main if currentPage is /login-main
-  }
 
   return (
     <div className="background">
