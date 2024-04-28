@@ -1,7 +1,14 @@
+import "../components/App.css";
+
 const Expenses = () => {
+  const mainText = () => {
+    return "Manage your expenses online with E-Gringotts.";
+  };
+
   return (
     <>
-      <h1>Hello</h1>
+      <div className="expenses-background"></div>
+      <div className="center-text transparent-text">{mainText()}</div>
     </>
   );
 };

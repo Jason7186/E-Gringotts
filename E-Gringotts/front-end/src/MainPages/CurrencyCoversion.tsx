@@ -1,7 +1,14 @@
+import "../components/App.css";
+
 const CurrencyConvertion = () => {
+  const mainText = () => {
+    return "Graph to be shown here.";
+  };
+
   return (
     <>
-      <h1>Hello</h1>
+      <div className="background"></div>
+      <div className="center-text transparent-text">{mainText()}</div>
     </>
   );
 };

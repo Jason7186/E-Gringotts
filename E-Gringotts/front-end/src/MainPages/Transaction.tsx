@@ -1,14 +1,14 @@
-import Button from "../components/Button";
-import clickHandler from "../handlers/clickHandler";
-import logo from "./logo.png";
+import "../components/App.css";
 
 const Transaction = () => {
   const mainText = () => {
-    return "The first digital bank. \n Register now.";
+    return "All your transactions, in one place.";
   };
+
   return (
     <>
-      <h1>Hello</h1>
+      <div className="background"></div>
+      <div className="center-text transparent-text">{mainText()}</div>
     </>
   );
 };
