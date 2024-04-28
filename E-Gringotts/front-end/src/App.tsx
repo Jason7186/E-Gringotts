@@ -7,11 +7,18 @@ import Navbar from "./Navbar";
 import { Route, Routes } from "react-router-dom";
 import LoginSignup from "./components/LoginSignup/LoginSignup";
 import LoginMain from "./components/LoginMainPages/login-main";
+import LoginCurrenyConversion from "./components/LoginMainPages/login-curreny-conversion";
+import LoginExpenses from "./components/LoginMainPages/login-expenses";
+import LoginTransaction from "./components/LoginMainPages/login-transaction";
+import Loginhelp from "./components/LoginMainPages/login-help";
+import { useState } from "react";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
   return (
     <>
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn} />
       <div>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
@@ -22,8 +29,21 @@ function App() {
           <Route path="/expenses" element={<Expenses />}></Route>
           <Route path="/transaction" element={<Transaction />}></Route>
           <Route path="/help" element={<Help />}></Route>
-          <Route path="/register" element={<LoginSignup />}></Route>
+          <Route
+            path="/register"
+            element={<LoginSignup setIsLoggedIn={setIsLoggedIn} />}
+          ></Route>
           <Route path="/login-main" element={<LoginMain />}></Route>
+          <Route path="/login-expenses" element={<LoginExpenses />}></Route>
+          <Route
+            path="/login-transaction"
+            element={<LoginTransaction />}
+          ></Route>
+          <Route
+            path="/login-currency-conversion"
+            element={<LoginCurrenyConversion />}
+          ></Route>
+          <Route path="/login-help" element={<Loginhelp />}></Route>
         </Routes>
       </div>
     </>
