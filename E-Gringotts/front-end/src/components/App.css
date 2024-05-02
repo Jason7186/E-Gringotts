@@ -99,5 +99,26 @@
     background-color: rgba(195, 12, 113, 0.9);
   }
 
+  .expenses-background{
+    background-image: url('expenses-background.png'); 
+    position: relative;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    height: 100vh;
+    z-index: 0;
+  }
+
+  .help-background{
+    background-image: url('rainpoo-background.png'); 
+    position: relative;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    height: 100vh;
+    z-index: 0;
+  }
   
   
