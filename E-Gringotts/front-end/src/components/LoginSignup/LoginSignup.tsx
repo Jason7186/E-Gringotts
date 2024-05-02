@@ -29,6 +29,7 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
     }
     console.log("Logging in with email:", email, "and password:", password);
     setIsLoggedIn(true);
+    sessionStorage.setItem("isLoggedIn", "true");
     navigate("/login-main");
   };
 
@@ -47,6 +48,7 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
     }
     console.log("Registering with email:", email, "and password:", password);
     setIsLoggedIn(true);
+    sessionStorage.setItem("isLoggedIn", "true");
     navigate("/login-main");
   };
 

@@ -70,3 +70,59 @@ body {
 .purpleButton:hover {
     background-color: rgba(195, 12, 113, 0.9);
 }
+
+.circle {
+    background-color: white; /* Dark purple */
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    overflow: hidden; /* Ensures the image does not escape the circle */
+    position: relative; /* Needed to position the image correctly */
+}
+
+.circle img {
+    width: auto; /* Makes the image fully cover the circle */
+    height: 100%; /* Keeps the image aspect ratio */
+    position: absolute; /* Positions the image */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Ensures centering is perfect */
+}
+
+.dropDownProfile {
+    position:absolute;
+    top: 6rem;
+    right: 0.8rem;
+    width: 120px;
+    padding: 15px;
+    border-radius: 15px;
+    background-color: rgba(24, 0, 53, 0.863);
+    border: 1px solid black;
+    z-index: 2;
+    color: white;
+}
+
+.dropDownProfile::before{
+    content: "";
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+    width: 20px;
+    height: 20px;
+    transform: rotate(45deg);
+    background-color: rgba(24, 0, 53, 0.863);
+}
+
+.dropDownProfile ul {
+    list-style-type: none; /* Removes bullets */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Removes default margin */
+    text-align: center; /* Centers the text */
+}
+
+.dropDownProfile li {
+    padding: 8px 12px; /* Adds some padding for clickable area */
+    cursor: pointer;
+}

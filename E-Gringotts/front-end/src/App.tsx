@@ -14,11 +14,13 @@ import Loginhelp from "./components/LoginMainPages/login-help";
 import { useState } from "react";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    return sessionStorage.getItem("isLoggedIn") === "true";
+  });
 
   return (
     <>
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
