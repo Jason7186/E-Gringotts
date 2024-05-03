@@ -11,8 +11,13 @@ const TransactionSidebar = () => {
   return (
     <>
       <div className="background-transaction">
+        <div>
+          <h1 className="transaction-text">
+            All you transactions in an instant. No magic, with E-Gringotts.
+          </h1>
+        </div>
         <div
-          className={`toggle-button ${isOpen ? "open" : ""}`}
+          className={`toggle-button ${isOpen ? "  open" : ""}`}
           onClick={toggleSidebar}
         >
           {isOpen ? "×" : "≡"}

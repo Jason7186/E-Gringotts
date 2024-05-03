@@ -74,5 +74,14 @@
     z-index: 0;
   }
 
+  .transaction-text{
+    color: white;
+    margin-top: 200px;
+    margin-left: 80px;
+    width: 650px;
+    position: absolute;
+    text-align: center;
+  }
+
 
   
