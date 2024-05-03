@@ -93,7 +93,7 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
                   type="password"
                   placeholder="6 digit secure pin"
                   value={pin}
-                  onChange={(e) => setPin(e.target.value)}
+                  onChange={handlePinChange}
                   maxLength={6}
                 />
               </div>
@@ -157,10 +157,7 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
                   type="password"
                   placeholder="6 digit secure pin"
                   value={pin}
-                  onChange={(e) => {
-                    setPin(e.target.value);
-                    handlePinChange(e);
-                  }}
+                  onChange={handlePinChange}
                   maxLength={6}
                 />
               </div>
