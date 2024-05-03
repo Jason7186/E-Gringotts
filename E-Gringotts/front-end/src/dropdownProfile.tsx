@@ -1,5 +1,5 @@
 import "./style.css";
-import React from "react";
+import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 interface DropDownProfileProps {
@@ -13,6 +13,9 @@ const DropDownProfile: React.FC<DropDownProfileProps> = ({ setIsLoggedIn }) => {
     sessionStorage.removeItem("isLoggedIn");
     navigate("/");
   };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleDropdown = () => setIsOpen(!isOpen);
 
   return (
     <div className="dropDownProfile">

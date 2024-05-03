@@ -98,7 +98,7 @@ body {
     width: 120px;
     padding: 15px;
     border-radius: 15px;
-    background-color: rgba(24, 0, 53, 0.863);
+    background-color: rgb(24, 0, 53, 0.863);
     border: 1px solid black;
     z-index: 2;
     color: white;

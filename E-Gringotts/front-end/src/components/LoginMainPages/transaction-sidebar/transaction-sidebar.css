@@ -1,0 +1,67 @@
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 280px; /* Width of the sidebar */
+    background-color: rgba(24, 0, 53, 0.863);
+    padding: 20px;
+    transition: left 0.3s ease; /* Animate the left property */
+  }
+  
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .button {
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    background-color: #555; /* Adjust button background color as needed */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .button:hover {
+    background-color: #777; /* Adjust button hover color as needed */
+  }
+
+  .sidebar.closed {
+    left: -280px; /* Move sidebar out of view */
+  }
+  
+  .toggle-button {
+    position: fixed;
+    left: 5px; /* Position closer to the edge when sidebar is closed */
+    top: 240px;
+    width: 30px;
+    height: 30px;
+    background-color: #666;
+    color: white;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    user-select: none;
+    transition: background-color 0.3s, left 0.3s ease;
+  }
+  
+  .toggle-button:hover {
+    background-color: #888;
+  }
+  
+  .sidebar.open {
+    left: 0; /* Reset position when sidebar is open */
+  }
+  
+  .toggle-button.open {
+    left: 285px; /* Move toggle button with the sidebar */
+  }
+
+
+  
