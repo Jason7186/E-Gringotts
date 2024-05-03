@@ -63,5 +63,16 @@
     left: 285px; /* Move toggle button with the sidebar */
   }
 
+  .background-transaction{
+    background-image: url('login-transaction-wallpaper.jpg'); 
+    position: relative;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    height: 100vh;
+    z-index: 0;
+  }
+
 
   
