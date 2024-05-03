@@ -39,6 +39,9 @@ body {
     text-decoration: none;
 }
 
+.nav li {
+    transition: all 0.1s;
+}
 .nav li a:link,
 .nav li a:visited {
     color: inherit;
@@ -58,7 +61,7 @@ body {
     border-radius: 30px;
     padding: 12px 30px;
     cursor: pointer;
-    transition: background-color 0.1s;
+    transition: background-color 0.2s;
 }
 
 .purpleButton:link,
@@ -125,4 +128,10 @@ body {
 .dropDownProfile li {
     padding: 8px 12px; /* Adds some padding for clickable area */
     cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.dropDownProfile li:hover {
+    background-color: rgba(195, 12, 113, 0.9);
 }

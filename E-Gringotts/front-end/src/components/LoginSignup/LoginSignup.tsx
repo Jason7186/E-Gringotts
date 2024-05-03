@@ -2,7 +2,6 @@ import email_icon from "./email.png";
 import password_icon from "./password.png";
 import user_icon from "./person.png";
 import "./LoginSignup.css";
-import LoginMain from "../LoginMainPages/login-main";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

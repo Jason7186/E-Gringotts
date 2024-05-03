@@ -13,7 +13,7 @@ const TransactionSidebar = () => {
       <div className="background-transaction">
         <div>
           <h1 className="transaction-text">
-            All you transactions in an instant. No magic, with E-Gringotts.
+            All you transactions in an instant. No magic, only E-Gringotts.
           </h1>
         </div>
         <div
