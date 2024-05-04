@@ -2,7 +2,6 @@ import email_icon from "./email.png";
 import password_icon from "./password.png";
 import user_icon from "./person.png";
 import "./LoginSignup.css";
-import LoginMain from "../LoginMainPages/login-main";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -29,6 +28,7 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
     }
     console.log("Logging in with email:", email, "and password:", password);
     setIsLoggedIn(true);
+    sessionStorage.setItem("isLoggedIn", "true");
     navigate("/login-main");
   };
 
@@ -47,6 +47,7 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
     }
     console.log("Registering with email:", email, "and password:", password);
     setIsLoggedIn(true);
+    sessionStorage.setItem("isLoggedIn", "true");
     navigate("/login-main");
   };
 
@@ -91,7 +92,7 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
                   type="password"
                   placeholder="6 digit secure pin"
                   value={pin}
-                  onChange={(e) => setPin(e.target.value)}
+                  onChange={handlePinChange}
                   maxLength={6}
                 />
               </div>
@@ -155,10 +156,7 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
                   type="password"
                   placeholder="6 digit secure pin"
                   value={pin}
-                  onChange={(e) => {
-                    setPin(e.target.value);
-                    handlePinChange(e);
-                  }}
+                  onChange={handlePinChange}
                   maxLength={6}
                 />
               </div>

@@ -12,13 +12,22 @@ import LoginExpenses from "./components/LoginMainPages/login-expenses";
 import LoginTransaction from "./components/LoginMainPages/login-transaction";
 import Loginhelp from "./components/LoginMainPages/login-help";
 import { useState } from "react";
+import Login from "./components/LoginSignup/login";
+import Register from "./components/LoginSignup/register";
+import Friends from "./components/LoginMainPages/transaction-pages/friends";
+import OverseasTransaction from "./components/LoginMainPages/transaction-pages/overseas-transaction";
+import InstantTransaction from "./components/LoginMainPages/transaction-pages/instant-transaction";
+import Deposit from "./components/LoginMainPages/transaction-pages/deposit";
+import TransactionHistory from "./components/LoginMainPages/transaction-pages/transaction-history";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    return sessionStorage.getItem("isLoggedIn") === "true";
+  });
 
   return (
     <>
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
@@ -30,8 +39,12 @@ function App() {
           <Route path="/transaction" element={<Transaction />}></Route>
           <Route path="/help" element={<Help />}></Route>
           <Route
+            path="/login"
+            element={<Login setIsLoggedIn={setIsLoggedIn} />}
+          ></Route>
+          <Route
             path="/register"
-            element={<LoginSignup setIsLoggedIn={setIsLoggedIn} />}
+            element={<Register setIsLoggedIn={setIsLoggedIn} />}
           ></Route>
           <Route path="/login-main" element={<LoginMain />}></Route>
           <Route path="/login-expenses" element={<LoginExpenses />}></Route>
@@ -44,6 +57,26 @@ function App() {
             element={<LoginCurrenyConversion />}
           ></Route>
           <Route path="/login-help" element={<Loginhelp />}></Route>
+          <Route
+            path="/login-transaction/friends"
+            element={<Friends />}
+          ></Route>
+          <Route
+            path="/login-transaction/overseas-transaction"
+            element={<OverseasTransaction />}
+          ></Route>
+          <Route
+            path="/login-transaction/instant-transaction"
+            element={<InstantTransaction />}
+          ></Route>
+          <Route
+            path="/login-transaction/deposit"
+            element={<Deposit />}
+          ></Route>
+          <Route
+            path="/login-transaction/transaction-history"
+            element={<TransactionHistory />}
+          ></Route>
         </Routes>
       </div>
     </>
