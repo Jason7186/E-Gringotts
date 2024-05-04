@@ -1,0 +1,62 @@
+.background-friend{
+    background-color: black;
+}
+
+.title-container {
+    position: absolute;
+    background-color: lightblue;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 100px;
+    margin-left: 250px;
+    width: 800px;
+  }
+  
+  .list-container {
+    position: absolute;
+    margin-top: 200px;
+    margin-left: 250px;
+    background-color: lightgrey;
+    border-radius: 5px;
+    width: 800px;
+    height: 300px;
+  }
+
+  .add-container {
+    position: absolute;
+    margin-top: 160px;
+    margin-left: 250px;
+    background-color: lightgrey;
+    border-radius: 5px;
+    width: 800px;
+  }
+
+  .submit-button{
+    background-color: black;
+    border-radius: 5px;
+    color: white;
+    padding: 6px 24px;
+  }
+  
+  .friend-input {
+    width: 90%;
+    padding: 5px;
+}
+
+.friend-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.friend-item {
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.194);
+    margin: 5px 0;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.friend-item:hover {
+    background-color: #f0f0f0;
+}
