@@ -83,5 +83,11 @@
     text-align: center;
   }
 
+  .button a:link,
+  .button a:visited{
+    color: inherit;
+    text-decoration: none;
+  }
+
 
   
