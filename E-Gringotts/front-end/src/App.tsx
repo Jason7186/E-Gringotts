@@ -12,6 +12,8 @@ import LoginExpenses from "./components/LoginMainPages/login-expenses";
 import LoginTransaction from "./components/LoginMainPages/login-transaction";
 import Loginhelp from "./components/LoginMainPages/login-help";
 import { useState } from "react";
+import Login from "./components/LoginSignup/login";
+import Register from "./components/LoginSignup/register";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -32,8 +34,12 @@ function App() {
           <Route path="/transaction" element={<Transaction />}></Route>
           <Route path="/help" element={<Help />}></Route>
           <Route
+            path="/login"
+            element={<Login setIsLoggedIn={setIsLoggedIn} />}
+          ></Route>
+          <Route
             path="/register"
-            element={<LoginSignup setIsLoggedIn={setIsLoggedIn} />}
+            element={<Register setIsLoggedIn={setIsLoggedIn} />}
           ></Route>
           <Route path="/login-main" element={<LoginMain />}></Route>
           <Route path="/login-expenses" element={<LoginExpenses />}></Route>
