@@ -13,7 +13,7 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+
   const [dob, setDob] = useState("");
   const [pin, setPin] = useState("");
   const navigate = useNavigate();
@@ -23,7 +23,6 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
     if (
       email.trim() === "" ||
       password.trim() === "" ||
-      age.trim() === "" ||
       dob.trim() === "" ||
       pin.trim() === "" ||
       name.trim() === ""
@@ -60,15 +59,6 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <img src={user_icon} alt="" />
-              <input
-                type="number"
-                placeholder="Age"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
               />
             </div>
             <div className="input">

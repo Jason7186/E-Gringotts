@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import "./friends.css";
 import TransactionSidebar from "../transaction-sidebar/transaction-sidebar";
+import trash_icon from "./trash.png";
 
 function FriendList() {
   // Initialize state with explicit type
@@ -21,6 +22,11 @@ function FriendList() {
     }
   };
 
+  // Remove friend by index
+  const removeFriend = (index: number) => {
+    setFriends(friends.filter((_, i) => i !== index));
+  };
+
   return (
     <>
       <TransactionSidebar />
@@ -37,7 +43,7 @@ function FriendList() {
               placeholder="Add a friend"
               className="friend-input"
             />
-            <button className="submit-button" type="submit">
+            <button className="friend-submit-button" type="submit">
               Add
             </button>
           </form>
@@ -47,6 +53,12 @@ function FriendList() {
             {friends.map((friend, index) => (
               <li className="friend-item" key={index}>
                 {friend}
+                <img
+                  className="remove-icon"
+                  src={trash_icon}
+                  alt="Remove"
+                  onClick={() => removeFriend(index)}
+                />
               </li>
             ))}
           </ul>
