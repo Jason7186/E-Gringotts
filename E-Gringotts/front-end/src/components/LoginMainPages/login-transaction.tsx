@@ -1,9 +1,9 @@
-import React from "react";
 import TransactionSidebar from "./transaction-sidebar/transaction-sidebar";
+import "./transaction-sidebar/transaction-sidebar.css";
 
 const LoginTransaction = () => {
   return (
-    <div>
+    <div className="background-transaction">
       <TransactionSidebar />
     </div>
   );

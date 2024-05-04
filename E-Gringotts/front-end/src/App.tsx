@@ -14,6 +14,11 @@ import Loginhelp from "./components/LoginMainPages/login-help";
 import { useState } from "react";
 import Login from "./components/LoginSignup/login";
 import Register from "./components/LoginSignup/register";
+import Friends from "./components/LoginMainPages/transaction-pages/friends";
+import OverseasTransaction from "./components/LoginMainPages/transaction-pages/overseas-transaction";
+import InstantTransaction from "./components/LoginMainPages/transaction-pages/instant-transaction";
+import Deposit from "./components/LoginMainPages/transaction-pages/deposit";
+import TransactionHistory from "./components/LoginMainPages/transaction-pages/transaction-history";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -52,6 +57,26 @@ function App() {
             element={<LoginCurrenyConversion />}
           ></Route>
           <Route path="/login-help" element={<Loginhelp />}></Route>
+          <Route
+            path="/login-transaction/friends"
+            element={<Friends />}
+          ></Route>
+          <Route
+            path="/login-transaction/overseas-transaction"
+            element={<OverseasTransaction />}
+          ></Route>
+          <Route
+            path="/login-transaction/instant-transaction"
+            element={<InstantTransaction />}
+          ></Route>
+          <Route
+            path="/login-transaction/deposit"
+            element={<Deposit />}
+          ></Route>
+          <Route
+            path="/login-transaction/transaction-history"
+            element={<TransactionHistory />}
+          ></Route>
         </Routes>
       </div>
     </>
