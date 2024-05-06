@@ -10,11 +10,6 @@ const TransactionSidebar = () => {
 
   return (
     <>
-      <div>
-        <h1 className="transaction-text">
-          All you transactions in an instant. No magic, only E-Gringotts.
-        </h1>
-      </div>
       <div
         className={`toggle-button ${isOpen ? "  open" : ""}`}
         onClick={toggleSidebar}

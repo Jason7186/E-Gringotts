@@ -83,4 +83,4 @@ function App() {
   );
 }
 
-export default App; //export so it can be used somewhere else
+export default App;
