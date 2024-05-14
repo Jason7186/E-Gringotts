@@ -11,7 +11,7 @@
     z-index: 1000; /* Make sure it's above all other content */
   }
   
-  .modal-content {
+  .modal-contents {
     background: white; /* Background color of the modal */
     padding: 20px;
     border-radius: 8px; /* Rounded corners */
@@ -22,17 +22,17 @@
     text-align: center; /* Center the text inside the modal */
   }
   
-  .modal-content h2 {
+  .modal-contents h2 {
     margin-top: 0;
     color: #333; /* Dark grey color for the title */
   }
   
-  .modal-content p {
+  .modal-contents p {
     font-size: 16px; /* Reasonable text size */
     color: #555; /* Dark grey color for the text */
   }
   
-  .modal-content button {
+  .modal-contents button {
     margin-top: 20px;
     margin-right: 10px;
     padding: 10px 20px;
@@ -44,7 +44,7 @@
     font-weight: bold;
   }
   
-  .modal-content button:last-child {
+  .modal-contents button:last-child {
     background-color: #ccc; /* Light grey background for the cancel button */
     color: black;
   }

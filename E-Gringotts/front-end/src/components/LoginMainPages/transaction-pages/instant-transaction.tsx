@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import Modal from "./Modal";
 import TransactionSidebar from "../transaction-sidebar/transaction-sidebar";
 import "./instant-transaction.css";
+import { useNavigate } from "react-router-dom";
 
 const InstantTransaction = () => {
   const [accountId, setAccountId] = useState("");
   const [amount, setAmount] = useState("");
   const [accountName, setAccountName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate;
 
   const handleAccountInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAccountId(e.target.value);
@@ -19,11 +21,16 @@ const InstantTransaction = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Assuming you fetch the account name here or it's done earlier
-    {
-      /*fetchAccountName(accountId);*/
+    if (accountId.trim() === "" || amount.trim() === "") {
+      alert("Please enter all fields.");
+      return;
+    } else {
+      // Assuming you fetch the account name here or it's done earlier
+      {
+        /*fetchAccountName(accountId);*/
+      }
+      setIsModalOpen(true);
     }
-    setIsModalOpen(true);
   };
 
   const handleConfirm = () => {

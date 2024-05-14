@@ -1,5 +1,5 @@
 import React from "react";
-import "./Modal.css";
+import "./Modal.css"; // Make sure to create this CSS file for modal styling
 
 interface ModalProps {
   isOpen: boolean;
@@ -21,9 +21,9 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-contents">
         <h2>Confirm Transaction</h2>
-        {/*<p><strong>Account Name:</strong> {accountName}</p> */}
+        {/*<p><strong>Account Name:</strong> {accountName}</p>*/}
         <p>
           <strong>Account ID:</strong> {accountId}
         </p>
