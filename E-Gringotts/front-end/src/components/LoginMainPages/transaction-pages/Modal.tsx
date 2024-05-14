@@ -7,7 +7,7 @@ interface ModalProps {
   onConfirm: () => void;
   accountId: string;
   amount: string;
-  accountName: string;
+  /*accountName: string;*/
 }
 
 const Modal: React.FC<ModalProps> = ({

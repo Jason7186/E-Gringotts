@@ -9,6 +9,9 @@ const InstantTransaction = () => {
   const [amount, setAmount] = useState("");
   const [accountName, setAccountName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isTransferring, setIsTransferring] = useState(false);
+  const [isTransferSuccessful, setIsTransferSuccessful] = useState(false);
   const navigate = useNavigate;
 
   const handleAccountInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,16 +32,18 @@ const InstantTransaction = () => {
       {
         /*fetchAccountName(accountId);*/
       }
-      setIsModalOpen(true);
+      setIsConfirmOpen(true);
     }
   };
 
   const handleConfirm = () => {
-    setIsModalOpen(false);
-    console.log(
-      `Transaction Confirmed! Account ID: ${accountId}, Amount: ${amount}`
-    );
-    // Here you might send data to your backend or perform the transaction
+    setIsConfirmOpen(false);
+    setIsTransferring(true); // Start the transferring process
+    setTimeout(() => {
+      setIsTransferring(false);
+      setIsTransferSuccessful(true); // Assume transfer is successful after a delay
+      setTimeout(() => setIsTransferSuccessful(false), 3000); // Close success message after 3 seconds
+    }, 3000); // Simulating a transfer delay
   };
 
   {
@@ -80,13 +85,26 @@ const InstantTransaction = () => {
         </div>
       </div>
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleConfirm}
         accountId={accountId}
         amount={amount}
-        accountName={accountName}
       />
+      {isTransferring && (
+        <div className="modal-overlay">
+          <div className="modal-contents">
+            <h2>Transferring...</h2>
+          </div>
+        </div>
+      )}
+      {isTransferSuccessful && (
+        <div className="modal-overlay">
+          <div className="modal-contents">
+            <h2>Transfer Successful!</h2>
+          </div>
+        </div>
+      )}
     </>
   );
 };
