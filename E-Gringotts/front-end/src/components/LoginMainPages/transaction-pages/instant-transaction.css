@@ -1,24 +1,60 @@
- .transaction-container {
-    position: absolute;
-    margin-left: 60px;
-    margin-top: 100px;
-    background-color: rgba(112, 13, 142, 0.669);
-    width: 90%;
-    height: 450px;
-    border-radius: 10px;
-    padding: 20px 20px;
- }
+.login-transaction-background {
+   background-image: url('../login-transaction-background.jpeg'); /* Update with your image path */
+   background-size: cover; /* Cover the entire page */
+   background-position: center; /* Center the background image */
+   background-repeat: no-repeat; /* Do not repeat the image */
+   height: 100vh; 
+   width: 100%;
+}
 
- .amount-container {
-    height: 50px;
-    width: 300px;
-    background-color: white;
-    border-radius: 5px;
- }
+.transaction-container {
+   position: absolute;
+   margin-left: 320px;
+   margin-top: 100px;
+   background-color: rgba(71, 8, 90, 0.938);
+   width: 50%;
+   height: 450px;
+   border-radius: 15px;
+   padding: 20px;
+   color: white;
+   font-family: Arial, sans-serif;
+}
 
- .transfer-container {
-    height: 200px;
-    width: 600px;
-    margin-top: 70px ;
-    background-color: white;
- }
+.transaction-container h3 {
+   margin-top: 10px;
+}
+
+.transaction-container form {
+   display: flex;
+   flex-direction: column;
+   margin-top: 20px;
+}
+
+.transaction-container label {
+   margin-bottom: 10px;
+}
+
+.transaction-container input {
+   margin-bottom: 20px;
+   padding: 8px;
+   border: none;
+   border-radius: 4px;
+   width: 100%;
+}
+
+.transaction-container button {
+   padding: 10px 20px;
+   margin-left: 140px;
+   margin-top: 20px;
+   width: 50%;
+   background-color: rgba(222, 11, 127, 0.9);
+   color: #000;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   transition: background-color 0.3s;
+}
+
+.transaction-container button:hover {
+   background-color: rgba(250, 52, 161, 0.9);
+}

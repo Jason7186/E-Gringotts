@@ -1,0 +1,82 @@
+.login-transaction-background {
+    background-image: url('../login-transaction-background.jpeg'); /* Update with your image path */
+    background-size: cover; /* Cover the entire page */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    height: 100vh; 
+    width: 100%;
+ }
+ 
+ .overseas-transaction-container {
+    position: absolute;
+    margin-left: 320px;
+    margin-top: 100px;
+    background-color: rgba(71, 8, 90, 0.938);
+    width: 50%;
+    height: 450px;
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    font-family: Arial, sans-serif;
+ }
+ 
+ .overseas-transaction-container h3 {
+    margin-top: 10px;
+ }
+ 
+ .overseas-transaction-container form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+ }
+ 
+ .overseas-transaction-container label {
+    margin-bottom: 10px;
+ }
+ 
+ .overseas-transaction-container input {
+    margin-bottom: 20px;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+ }
+ 
+ .overseas-transaction-container button {
+    padding: 10px 20px;
+    margin-left: 140px;
+    width: 50%;
+    background-color: rgba(222, 11, 127, 0.9);
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+ }
+ 
+ .overseas-transaction-container button:hover {
+    background-color: rgba(250, 52, 161, 0.9);
+ }
+
+ .input-group {
+    display: flex;
+  }
+  
+  .input-group input,
+  .input-group select {
+    flex: 1;
+    margin-right: 5px; /* Adjust spacing between the elements */
+    height: 40px; /* Set a specific height that works for your design */
+    border: 1px solid #ccc; /* Optional: set a border for better visibility */
+    border-radius: 4px; /* Optional: add rounded corners */
+  }
+  
+  .input-group select {
+    flex: 0 0 auto; /* Adjust the width of the select box as needed */
+    width: 20%; /* Example width, adjust as necessary */
+  }
+
+  .galleon-amount {
+    padding-bottom: 10px;
+  }
+  
