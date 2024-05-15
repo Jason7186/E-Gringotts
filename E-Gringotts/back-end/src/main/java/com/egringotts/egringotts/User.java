@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Document(collection = "userInfo")
 public record User(
         @Id
@@ -22,5 +21,6 @@ public record User(
         String securityPin,
         DebitCardDetails debitCardDetails,
         CreditCardDetails creditCardDetails,
-        List<Transaction> transactions
+        List<Transaction> transactions,
+        List<Friend> friends
 ) {}

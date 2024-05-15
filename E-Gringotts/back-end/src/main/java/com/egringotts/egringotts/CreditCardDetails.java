@@ -1,9 +1,11 @@
 package com.egringotts.egringotts;
 
 import com.mongodb.client.*;
+import lombok.Getter;
 import org.bson.Document;
 import java.time.LocalDate;
 
+@Getter
 public class CreditCardDetails {
     private final String creditCardNumber;
     private final LocalDate creditExpiryDate;
@@ -42,15 +44,4 @@ public class CreditCardDetails {
         return String.format("%016d", newCardNumber);
     }
 
-    public String getCreditCardNumber() {
-        return creditCardNumber;
-    }
-
-    public LocalDate getCreditExpiryDate() {
-        return creditExpiryDate;
-    }
-
-    public String getCvv() {
-        return cvv;
-    }
 }
