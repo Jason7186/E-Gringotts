@@ -18,6 +18,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -136,7 +139,6 @@ public class UserService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private String createPdfInvoice(User user, Transaction newTransaction, double newAmount) throws Exception {
@@ -177,7 +179,14 @@ public class UserService {
         javaMailSender.send(message);
     }
 
-
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        String currentPrincipalName = authentication.getName();
+        return userRepository.findByEmail(currentPrincipalName).orElse(null);
+    }
 
 
 }
