@@ -1,19 +1,33 @@
 import TransactionSidebar from "../transaction-sidebar/transaction-sidebar";
 import React, { useState, useEffect } from "react";
-import Modal from "./Modal";
+import OverseasModal from "./OverseasModal";
 import "./overseas-transaction.css";
 import { useNavigate } from "react-router-dom";
 
 const OverseasTransaction = () => {
   const [accountId, setAccountId] = useState("");
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("USD"); // Default currency set as USD
+  const [currency, setCurrency] = useState("Sickle");
   const [accountName, setAccountName] = useState("");
+  const [galleonAmount, setGalleonAmount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isTransferring, setIsTransferring] = useState(false);
   const [isTransferSuccessful, setIsTransferSuccessful] = useState(false);
   const navigate = useNavigate;
+
+  useEffect(() => {
+    const calculateGalleons = () => {
+      let rate = 0;
+      if (currency === "Knut") {
+        rate = 0.002028; // Conversion rate from Knuts to Galleons
+      } else if (currency === "Sickle") {
+        rate = 0.05882; // Conversion rate from Sickles to Galleons
+      }
+      setGalleonAmount((parseFloat(amount) || 0) * rate);
+    };
+    calculateGalleons();
+  }, [amount, currency]);
 
   const handleAccountInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAccountId(e.target.value);
@@ -88,20 +102,25 @@ const OverseasTransaction = () => {
                 placeholder="Enter Amount"
               />
               <select value={currency} onChange={handleCurrencyChange}>
-                <option value="USD">Sickle</option>
-                <option value="EUR">Knut</option>
+                <option value="Sickle">Sickle</option>
+                <option value="Knut">Knut</option>
               </select>
+            </div>
+            <div className="galleon-amount">
+              Amount in Galleons: {galleonAmount.toFixed(2)}
             </div>
             <button type="submit">Transfer</button>
           </form>
         </div>
       </div>
-      <Modal
+      <OverseasModal
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleConfirm}
         accountId={accountId}
         amount={amount}
+        currency={currency}
+        galleonAmount={galleonAmount}
       />
       {isTransferring && (
         <div className="modal-overlay">

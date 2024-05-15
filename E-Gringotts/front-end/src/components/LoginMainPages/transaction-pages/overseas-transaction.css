@@ -76,4 +76,8 @@
     flex: 0 0 auto; /* Adjust the width of the select box as needed */
     width: 20%; /* Example width, adjust as necessary */
   }
+
+  .galleon-amount {
+    padding-bottom: 20px;
+  }
   
