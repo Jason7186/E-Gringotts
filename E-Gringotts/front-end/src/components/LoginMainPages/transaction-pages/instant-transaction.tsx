@@ -43,7 +43,7 @@ const InstantTransaction = () => {
       setIsTransferring(false);
       setIsTransferSuccessful(true); // Assume transfer is successful after a delay
       setTimeout(() => setIsTransferSuccessful(false), 3000); // Close success message after 3 seconds
-    }, 3000); // Simulating a transfer delay
+    }, 5000); // Simulating a transfer delay
   };
 
   {
@@ -63,7 +63,8 @@ const InstantTransaction = () => {
       <TransactionSidebar />
       <div className="login-transaction-background">
         <div className="transaction-container">
-          <h2 style={{ color: "white" }}>Available amount :</h2>
+          <h1 style={{ color: "gold" }}>Instant Transaction</h1>
+          <h3 style={{ color: "white" }}>Available amount :</h3>
           <form onSubmit={handleSubmit}>
             <label htmlFor="account-id">Transfer to:</label>
             <input

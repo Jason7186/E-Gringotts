@@ -9,26 +9,25 @@
 
 .transaction-container {
    position: absolute;
-   margin-left: 60px;
+   margin-left: 320px;
    margin-top: 100px;
    background-color: rgba(71, 8, 90, 0.938);
-   width: 90%;
+   width: 50%;
    height: 450px;
-   border-radius: 10px;
+   border-radius: 15px;
    padding: 20px;
    color: white;
    font-family: Arial, sans-serif;
 }
 
-.transaction-container h2 {
-   margin-top: 0;
-   margin-bottom: 20px;
+.transaction-container h3 {
+   margin-top: 30px;
 }
 
 .transaction-container form {
    display: flex;
    flex-direction: column;
-   margin-top: 70px;
+   margin-top: 40px;
 }
 
 .transaction-container label {
@@ -40,12 +39,14 @@
    padding: 8px;
    border: none;
    border-radius: 4px;
+   width: 100%;
 }
 
 .transaction-container button {
    padding: 10px 20px;
-   margin-left: 380px;
-   width: 30%;
+   margin-left: 140px;
+   margin-top: 40px;
+   width: 50%;
    background-color: rgba(222, 11, 127, 0.9);
    color: #000;
    border: none;
