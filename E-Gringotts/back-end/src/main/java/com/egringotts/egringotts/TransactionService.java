@@ -51,7 +51,7 @@ public class TransactionService {
         }
 
         Optional<User> receiverOpt = userRepository.findByAccountId(accountId);
-        if (!receiverOpt.isPresent()) {
+        if (receiverOpt.isEmpty()) {
             throw new RuntimeException("Receiver account not found");
         }
         User receiver = receiverOpt.get();
@@ -84,8 +84,23 @@ public class TransactionService {
         communicationService.sendInvoiceEmail(receiver, receiverTransaction, newReceiverAmount);
     }
 
-    public void addFriend(String accountId ) {
+    public void addFriend(String accountId) {
         User currentUser = getCurrentAuthenticatedUser();
+        if (currentUser == null) {
+            throw new RuntimeException("Authentication failed or incorrect user.");
+        }
+
+        Optional<User> friendOpt = userRepository.findByAccountId(accountId);
+        if (friendOpt.isEmpty()) {
+            throw new RuntimeException("Friend account not found");
+        }
+
+        User newFriend = friendOpt.get();
+        Friend friend = new Friend(newFriend.name(), newFriend.accountId());
+
+        Query query = new Query(where("accountId").is(currentUser.accountId()));
+        Update update = new Update().addToSet("friends", friend);
+        mongoTemplate.updateFirst(query, update, User.class);
 
     }
     public User getCurrentAuthenticatedUser() {

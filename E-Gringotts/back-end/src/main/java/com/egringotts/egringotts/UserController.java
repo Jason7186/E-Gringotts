@@ -63,13 +63,4 @@ public class UserController {
         }
     }
 
-    @GetMapping("/search/{accountId}")
-    public ResponseEntity<?> searchUserByAccountId(@PathVariable String accountId) {
-        String userName = transactionService.findUserNameByAccountId(accountId);
-        if (userName != null) {
-            return ResponseEntity.ok(userName);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-    }
 }
