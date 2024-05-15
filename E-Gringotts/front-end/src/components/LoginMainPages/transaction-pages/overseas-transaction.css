@@ -21,13 +21,13 @@
  }
  
  .overseas-transaction-container h3 {
-    margin-top: 30px;
+    margin-top: 10px;
  }
  
  .overseas-transaction-container form {
     display: flex;
     flex-direction: column;
-    margin-top: 40px;
+    margin-top: 10px;
  }
  
  .overseas-transaction-container label {
@@ -60,7 +60,6 @@
 
  .input-group {
     display: flex;
-    margin-bottom: 20px;
   }
   
   .input-group input,
@@ -68,8 +67,8 @@
     flex: 1;
     margin-right: 5px; /* Adjust spacing between the elements */
     height: 40px; /* Set a specific height that works for your design */
-  border: 1px solid #ccc; /* Optional: set a border for better visibility */
-  border-radius: 4px; /* Optional: add rounded corners */
+    border: 1px solid #ccc; /* Optional: set a border for better visibility */
+    border-radius: 4px; /* Optional: add rounded corners */
   }
   
   .input-group select {
@@ -78,6 +77,6 @@
   }
 
   .galleon-amount {
-    padding-bottom: 20px;
+    padding-bottom: 10px;
   }
   

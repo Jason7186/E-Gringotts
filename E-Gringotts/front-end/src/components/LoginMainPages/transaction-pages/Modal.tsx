@@ -7,6 +7,8 @@ interface ModalProps {
   onConfirm: () => void;
   accountId: string;
   amount: string;
+  details: string;
+  categories: string;
   /*accountName: string;*/
 }
 
@@ -16,6 +18,8 @@ const Modal: React.FC<ModalProps> = ({
   onConfirm,
   accountId,
   amount,
+  details,
+  categories,
 }) => {
   if (!isOpen) return null;
 
@@ -29,6 +33,12 @@ const Modal: React.FC<ModalProps> = ({
         </p>
         <p>
           <strong>Amount:</strong> {amount} Galleons
+        </p>
+        <p>
+          <strong>Details:</strong> {details}
+        </p>
+        <p>
+          <strong>Category:</strong> {categories}
         </p>
         <button onClick={onConfirm}>Confirm</button>
         <button onClick={onClose}>Cancel</button>

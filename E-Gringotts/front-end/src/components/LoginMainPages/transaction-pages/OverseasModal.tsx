@@ -10,6 +10,8 @@ interface ModalProps {
   /*accountName: string;*/
   currency: string;
   galleonAmount: number;
+  details: string;
+  categories: string;
 }
 
 const OverseasModal: React.FC<ModalProps> = ({
@@ -20,6 +22,8 @@ const OverseasModal: React.FC<ModalProps> = ({
   amount,
   currency,
   galleonAmount,
+  details,
+  categories,
 }) => {
   if (!isOpen) return null;
 
@@ -37,6 +41,12 @@ const OverseasModal: React.FC<ModalProps> = ({
         <p>
           <strong>Amount in Galleons:</strong> {galleonAmount.toFixed(2)}{" "}
           Galleons
+        </p>
+        <p>
+          <strong>Details:</strong> {details}
+        </p>
+        <p>
+          <strong>Category:</strong> {categories}
         </p>
         <button onClick={onConfirm}>Confirm</button>
         <button onClick={onClose}>Cancel</button>

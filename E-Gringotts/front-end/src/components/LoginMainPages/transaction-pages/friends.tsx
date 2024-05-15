@@ -40,7 +40,7 @@ function FriendList() {
               type="text"
               value={newFriend}
               onChange={handleInputChange}
-              placeholder="Add a friend"
+              placeholder="Enter accound ID to add"
               className="friend-input"
             />
             <button className="friend-submit-button" type="submit">

@@ -7,8 +7,9 @@ const CurrencyConvertion = () => {
 
   return (
     <>
-      <div className="background"></div>
-      <div className="center-text transparent-text">{mainText()}</div>
+      <div className="background">
+        <div className="currency-conversion-image"></div>
+      </div>
     </>
   );
 };

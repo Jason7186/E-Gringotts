@@ -21,13 +21,13 @@
 }
 
 .transaction-container h3 {
-   margin-top: 30px;
+   margin-top: 10px;
 }
 
 .transaction-container form {
    display: flex;
    flex-direction: column;
-   margin-top: 40px;
+   margin-top: 20px;
 }
 
 .transaction-container label {
@@ -45,7 +45,7 @@
 .transaction-container button {
    padding: 10px 20px;
    margin-left: 140px;
-   margin-top: 40px;
+   margin-top: 20px;
    width: 50%;
    background-color: rgba(222, 11, 127, 0.9);
    color: #000;

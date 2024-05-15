@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 const InstantTransaction = () => {
   const [accountId, setAccountId] = useState("");
   const [amount, setAmount] = useState("");
+  const [details, setDetails] = useState("");
+  const [categories, setCategories] = useState("");
   const [accountName, setAccountName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -22,9 +24,22 @@ const InstantTransaction = () => {
     setAmount(e.target.value);
   };
 
+  const handleDetailsInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDetails(e.target.value);
+  };
+
+  const handleCategoriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCategories(e.target.value);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (accountId.trim() === "" || amount.trim() === "") {
+    if (
+      accountId.trim() === "" ||
+      amount.trim() === "" ||
+      details.trim() === "" ||
+      categories.trim() === ""
+    ) {
       alert("Please enter all fields.");
       return;
     } else {
@@ -81,6 +96,29 @@ const InstantTransaction = () => {
               onChange={handleAmountInputChange}
               placeholder="Enter Amount"
             />
+            <input
+              type="text"
+              id="details"
+              value={details}
+              onChange={handleDetailsInputChange}
+              placeholder="Details (Max 50 charcaters)"
+              maxLength={50}
+            />
+            <select value={categories} onChange={handleCategoriesChange}>
+              <option value="" disabled selected>
+                Select Category
+              </option>
+              <option value="fund-transfer">Fund Transfer</option>
+              <option value="food-and-beverage">Food and Beverage</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Housing">Housing</option>
+              <option value="Medical">Medical</option>
+              <option value="Social">Social</option>
+              <option value="General Goods">General Goods</option>
+              <option value="Magical Items">Magical Items</option>
+              <option value="Others">Others</option>
+            </select>
             <button type="submit">Transfer</button>
           </form>
         </div>
@@ -91,6 +129,8 @@ const InstantTransaction = () => {
         onConfirm={handleConfirm}
         accountId={accountId}
         amount={amount}
+        details={details}
+        categories={categories}
       />
       {isTransferring && (
         <div className="modal-overlay">

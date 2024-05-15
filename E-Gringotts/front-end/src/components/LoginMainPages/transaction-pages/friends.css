@@ -1,13 +1,20 @@
 /* friends.css */
 
 .background-friend {
-  background-color: #f8f8f8; /* Light gray */
-  padding: 20px;
+  background-image: url('friends-image.png'); 
+    position: relative;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    z-index: 0;
 }
 
 .title-container {
   position: absolute;
-  background-color: lightblue;
+  background-color: rgb(164, 3, 172);
   border-radius: 5px;
   text-align: center;
   margin-top: 100px;
