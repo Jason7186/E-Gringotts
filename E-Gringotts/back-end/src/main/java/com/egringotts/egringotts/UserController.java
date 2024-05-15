@@ -6,12 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("")
@@ -20,12 +19,14 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final TransactionService transactionService;
 
     @Autowired
-    public UserController(UserService userService, AuthenticationManager authenticationManager, UserRepository userRepository) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, UserRepository userRepository, TransactionService transactionService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.transactionService = transactionService;
     }
 
     @PostMapping("/register")
@@ -35,25 +36,19 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser (@RequestBody UserDto userDto) {
+    public ResponseEntity<?> loginUser(@RequestBody UserDto userDto) {
         try {
             UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
             Authentication auth = authenticationManager.authenticate(authReq);
             SecurityContextHolder.getContext().setAuthentication(auth);
 
             UserDetails userDetails = (UserDetails) auth.getPrincipal();
-            Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
-            if (user.isPresent() && userDto.getSecurityPin().equals(user.get().securityPin())) {
-                return ResponseEntity.ok(user.get());
-            } else {
-                SecurityContextHolder.clearContext();
-                return ResponseEntity.status(401).body("Invalid email, password, or pin");
-            }
-        } catch (Exception e) {
-            SecurityContextHolder.clearContext();
-            return ResponseEntity.status(401).body("Authentication failed: " + e.getMessage());
+            return ResponseEntity.ok().body("Login successful");
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
         }
     }
+
 
     @GetMapping("/admin/data")
     public ResponseEntity<?> getAdminData() {
@@ -65,6 +60,16 @@ public class UserController {
             return ResponseEntity.ok().body("Admin data");
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
+        }
+    }
+
+    @GetMapping("/search/{accountId}")
+    public ResponseEntity<?> searchUserByAccountId(@PathVariable String accountId) {
+        String userName = transactionService.findUserNameByAccountId(accountId);
+        if (userName != null) {
+            return ResponseEntity.ok(userName);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
 }
