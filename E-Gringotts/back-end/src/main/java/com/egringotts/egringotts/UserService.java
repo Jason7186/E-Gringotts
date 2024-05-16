@@ -44,7 +44,8 @@ public class UserService {
                 userDto.getSecurityPin(),
                 new DebitCardDetails(),
                 new CreditCardDetails(),
-                new ArrayList<Transaction>()
+                new ArrayList<Transaction>(),
+                new ArrayList<>()
         );
         return userRepository.save(user);
     }
