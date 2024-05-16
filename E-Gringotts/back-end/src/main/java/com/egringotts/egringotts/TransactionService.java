@@ -1,5 +1,6 @@
 package com.egringotts.egringotts;
 
+import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -73,7 +74,7 @@ public class TransactionService {
         Update receiverUpdate = new Update().set("availableAmount", newReceiverAmount);
         mongoTemplate.updateFirst(receiverQuery,receiverUpdate, User.class);
 
-        Transaction senderTransaction = new Transaction(-amount, "Transfer", sender.name(), sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
+        Transaction senderTransaction = new Transaction(-1*amount, "Transfer", sender.name(), sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
         Transaction receiverTransaction = new Transaction(amount, "Transfer", sender.name(), sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
         addTransaction(sender.accountId(), senderTransaction);
         addTransaction(receiver.accountId(), receiverTransaction);
@@ -117,5 +118,14 @@ public class TransactionService {
     public String findUserNameByAccountId(String accountId) {
         Optional<User> userOpt = userRepository.findByAccountId(accountId);
         return userOpt.map(User::name).orElse(null);
+    }
+
+    public void deleteFriend(String friendAccountId) {
+        String currentUserId = getCurrentAuthenticatedUser().accountId();
+        if (currentUserId == null) throw new IllegalArgumentException("Account cannot be null");
+
+        Query query = new Query(where("accountId").is(currentUserId));
+        Update update = new Update().pull("friends",new Document("accountId", friendAccountId));
+        mongoTemplate.updateFirst(query,update, User.class);
     }
 }

@@ -1,5 +1,6 @@
 package com.egringotts.egringotts;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,4 +53,15 @@ public class TransactionController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/friends/{friendAccountId}")
+    public ResponseEntity<?> deleteFriend(@PathVariable String friendAccountId) {
+        try {
+            transactionService.deleteFriend(friendAccountId);
+            return ResponseEntity.ok("Delete Successful");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
