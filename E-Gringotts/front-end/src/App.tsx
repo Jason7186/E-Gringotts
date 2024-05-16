@@ -7,7 +7,7 @@ import Navbar from "./Navbar";
 import { Route, Routes } from "react-router-dom";
 import LoginSignup from "./components/LoginSignup/LoginSignup";
 import LoginMain from "./components/LoginMainPages/login-main";
-import LoginCurrenyConversion from "./components/LoginMainPages/login-curreny-conversion";
+import LoginCurrencyConversion from "./components/LoginMainPages/login-currency-conversion";
 import LoginExpenses from "./components/LoginMainPages/login-expenses";
 import LoginTransaction from "./components/LoginMainPages/login-transaction";
 import Loginhelp from "./components/LoginMainPages/login-help";
@@ -54,7 +54,7 @@ function App() {
           ></Route>
           <Route
             path="/login-currency-conversion"
-            element={<LoginCurrenyConversion />}
+            element={<LoginCurrencyConversion />}
           ></Route>
           <Route path="/login-help" element={<Loginhelp />}></Route>
           <Route
