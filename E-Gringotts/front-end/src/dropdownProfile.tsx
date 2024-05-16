@@ -20,7 +20,9 @@ const DropDownProfile: React.FC<DropDownProfileProps> = ({ setIsLoggedIn }) => {
   return (
     <div className="dropDownProfile">
       <ul>
-        <li>Profile</li>
+        <li className="loginProfile">
+          <a href="/login/profile">Profile</a>
+        </li>
         <li onClick={handleLogout}>Logout</li>
       </ul>
     </div>
