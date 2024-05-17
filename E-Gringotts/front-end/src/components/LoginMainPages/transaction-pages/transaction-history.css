@@ -1,0 +1,13 @@
+.transaction-history-background{
+    background-image: url('transaction-history.jpg'); 
+    position: relative;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+}

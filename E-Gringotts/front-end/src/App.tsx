@@ -20,6 +20,7 @@ import InstantTransaction from "./components/LoginMainPages/transaction-pages/in
 import Deposit from "./components/LoginMainPages/transaction-pages/deposit";
 import TransactionHistory from "./components/LoginMainPages/transaction-pages/transaction-history";
 import LoginProfile from "./components/LoginMainPages/login-profile";
+import CardDetails from "./components/LoginMainPages/card-info";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -78,7 +79,12 @@ function App() {
             path="/login-transaction/transaction-history"
             element={<TransactionHistory />}
           ></Route>
+          <Route
+            path="/instant-transaction/:id"
+            element={<InstantTransaction />}
+          />
           <Route path="/login/profile" element={<LoginProfile />}></Route>
+          <Route path="/login/card-details" element={<CardDetails />}></Route>
         </Routes>
       </div>
     </>
