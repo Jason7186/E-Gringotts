@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "./Modal";
 import TransactionSidebar from "../transaction-sidebar/transaction-sidebar";
 import "./instant-transaction.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const InstantTransaction = () => {
   const [accountId, setAccountId] = useState("");
@@ -14,7 +14,14 @@ const InstantTransaction = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isTransferring, setIsTransferring] = useState(false);
   const [isTransferSuccessful, setIsTransferSuccessful] = useState(false);
+  const { id } = useParams();
   const navigate = useNavigate;
+
+  useEffect(() => {
+    if (id) {
+      setAccountId(id); // Set the accountId if passed via URL
+    }
+  }, [id]);
 
   const handleAccountInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAccountId(e.target.value);

@@ -14,17 +14,48 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
   const [pin, setPin] = useState("");
   const navigate = useNavigate();
 
-  const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (email.trim() === "" || password.trim() === "" || pin.trim() === "") {
       alert("Please enter all fields.");
       return;
     }
-    console.log("Logging in with email:", email, "and password:", password);
+
+    console.log("Login successful");
     setIsLoggedIn(true);
     sessionStorage.setItem("isLoggedIn", "true");
     navigate("/login-main");
+
+    // const loginDetails = {
+    //   email: email,
+    //   password: password,
+    //   pin: pin, // Ensure backend handles this if necessary
+    // };
+
+    // try {
+    //   const response = await fetch("http://localhost:5173/login", {
+    //     // Update backend URL
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(loginDetails),
+    //   });
+
+    //   if (response.ok) {
+    //     const result = await response.json();
+    //     console.log("Login successful", result);
+    //     setIsLoggedIn(true);
+    //     sessionStorage.setItem("isLoggedIn", "true");
+    //     navigate("/login-main");
+    //   } else {
+    //     throw new Error("Failed to login");
+    //   }
+    // } catch (error) {
+    //   console.error("Login error:", error);
+    //   alert("Login failed. Please check your credentials.");
+    // }
   };
 
   const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {

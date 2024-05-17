@@ -18,8 +18,9 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
   const [pin, setPin] = useState("");
   const navigate = useNavigate();
 
-  const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (
       email.trim() === "" ||
       password.trim() === "" ||
@@ -30,10 +31,43 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
       alert("Please enter all fields.");
       return;
     }
-    console.log("Registering with email:", email, "and password:", password);
+
+    console.log("Registration successful");
     setIsLoggedIn(true);
     sessionStorage.setItem("isLoggedIn", "true");
     navigate("/login-main");
+
+    // const userDetails = {
+    //   name,
+    //   dateOfBirth: dob,
+    //   email,
+    //   password,
+    //   securityPin: pin,
+    // };
+
+    // try {
+    //   const response = await fetch("http://localhost:5173/register", {
+    //     // Make sure this URL matches your Spring Boot endpoint
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(userDetails),
+    //   });
+
+    //   if (response.ok) {
+    //     const user = await response.json();
+    //     console.log("Registration successful", user);
+    //     setIsLoggedIn(true);
+    //     sessionStorage.setItem("isLoggedIn", "true");
+    //     navigate("/login-main"); // Navigate to the main login area after successful registration
+    //   } else {
+    //     throw new Error("Registration failed");
+    //   }
+    // } catch (error) {
+    //   console.error("Registration error:", error);
+    //   alert("Registration failed. Please try again.");
+    // }
   };
 
   const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
