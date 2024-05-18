@@ -4,6 +4,8 @@ import user_icon from "./person.png";
 import "./LoginSignup.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoginModal from "./login-modal";
+import "./login-modal.css";
 
 interface LoginSignupProps {
   setIsLoggedIn: React.Dispatch<boolean>;
@@ -47,6 +49,11 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
     setIsLoggedIn(true);
     sessionStorage.setItem("isLoggedIn", "true");
     navigate("/login-main");
+    <div className="modal-overlay">
+      <div className="modal-contents">
+        <h1>Logged In Successfully!</h1>
+      </div>
+    </div>;
   };
 
   const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
