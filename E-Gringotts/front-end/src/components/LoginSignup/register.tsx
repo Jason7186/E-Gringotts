@@ -80,6 +80,7 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
     } catch (error) {
       console.error("Registration error:", error);
       alert("Registration failed. Please try again.");
+    } finally {
       setCreating(false);
     }
   };

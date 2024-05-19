@@ -47,6 +47,7 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
 
       if (response.ok) {
         const result = await response.json();
+        localStorage.setItem("token", result.token);
         console.log("Login successful", result);
         setIsLoggedIn(true);
         sessionStorage.setItem("isLoggedIn", "true");
@@ -60,6 +61,8 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed. Please check your credentials.");
+    } finally {
+      setIsLoading(false);
     }
   };
 

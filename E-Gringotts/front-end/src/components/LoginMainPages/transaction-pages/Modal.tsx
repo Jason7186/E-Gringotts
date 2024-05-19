@@ -9,7 +9,7 @@ interface ModalProps {
   amount: string;
   details: string;
   categories: string;
-  /*accountName: string;*/
+  accountName: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -20,6 +20,7 @@ const Modal: React.FC<ModalProps> = ({
   amount,
   details,
   categories,
+  accountName,
 }) => {
   if (!isOpen) return null;
 
@@ -30,6 +31,9 @@ const Modal: React.FC<ModalProps> = ({
         {/*<p><strong>Account Name:</strong> {accountName}</p>*/}
         <p>
           <strong>Account ID:</strong> {accountId}
+        </p>
+        <p>
+          <strong>Account Name:</strong> {accountName}
         </p>
         <p>
           <strong>Amount:</strong> {amount} Galleons

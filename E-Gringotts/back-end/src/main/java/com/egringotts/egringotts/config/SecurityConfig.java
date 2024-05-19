@@ -37,15 +37,6 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    // @Bean
-    // public AuthenticationManager
-    // authenticationManagerBean(AuthenticationManagerBuilder auth) throws Exception
-    // {
-    // auth.userDetailsService(customUserDetailsService)
-    // .passwordEncoder(passwordEncoder());
-    // return auth.build();
-    // }
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
@@ -64,9 +55,9 @@ public class SecurityConfig {
                             return config;
                         }))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/register", "/error").permitAll()
-                        .requestMatchers("/public/**").permitAll() // Publicly accessible endpoints
-                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN") // Admin-only endpoints
+                        .requestMatchers("/login", "/register", "/error", "/login-transaction/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Only admins can access paths under
+                                                                           // /api/admin/
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

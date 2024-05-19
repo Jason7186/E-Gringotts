@@ -36,23 +36,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
                 username = JwtHelper.extractUsername(token);
+                System.out.println("Extracted Username: " + username);
+            } else {
+                System.out.println("Error in catching the token");
             }
-//      If the accessToken is null. It will pass the request to next filter in the chain.
-//      Any login and signup requests will not have jwt token in their header, therefore they will be passed to next filter chain.
             if (token == null) {
                 filterChain.doFilter(request, response);
+                System.out.println("Token is null");
                 return;
             }
-//       If any accessToken is present, then it will validate the token and then authenticate the request in security context
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 if (JwtHelper.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    System.out.println("User authenticated: " + username);
+                } else {
+                    System.out.println("Token validation failed for user: " + username);
                 }
             }
-
             filterChain.doFilter(request, response);
         } catch (AccessDeniedException e) {
             ApiErrorResponse errorResponse = new ApiErrorResponse(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
@@ -60,6 +63,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             response.getWriter().write(toJson(errorResponse));
         }
     }
+
+
 
     private String toJson(ApiErrorResponse response) {
         try {

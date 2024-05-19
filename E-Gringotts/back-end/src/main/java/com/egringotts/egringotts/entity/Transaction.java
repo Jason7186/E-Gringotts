@@ -1,7 +1,6 @@
 package com.egringotts.egringotts.entity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,8 +19,8 @@ public class Transaction {
     private String details;
 
 
-    public Transaction(Double amount, String type, String sender, String senderId, String receiver, String receiverId, String category, String details) {
-        this.transactionId = UUID.randomUUID().toString();
+    public Transaction(String transactionId, Double amount, String type, String sender, String senderId, String receiver, String receiverId, String category, String details) {
+        this.transactionId = transactionId;
         this.dateTime = LocalDateTime.now();
         this.amount = amount;
         this.type = type;

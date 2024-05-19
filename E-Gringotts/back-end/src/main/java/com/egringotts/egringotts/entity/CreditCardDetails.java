@@ -1,5 +1,6 @@
 package com.egringotts.egringotts.entity;
 
+
 import com.mongodb.client.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,14 +22,12 @@ public class CreditCardDetails {
     }
 
     private String cardNumGenerator() {
-        MongoClient mongoClient = MongoClients
-                .create("mongodb+srv://hongyu6776:7mmmVc7f29pacg5r@bankinfo.vntebxz.mongodb.net/");
+        MongoClient mongoClient = MongoClients.create("mongodb+srv://hongyu6776:7mmmVc7f29pacg5r@bankinfo.vntebxz.mongodb.net/\n");
         MongoDatabase database = mongoClient.getDatabase("bank-api-db");
         MongoCollection<Document> collection = database.getCollection("userInfo");
 
         // Find the most recent user document with credit card details
-        FindIterable<Document> result = collection.find().sort(new Document("creditCardDetails.creditCardNumber", -1))
-                .limit(1);
+        FindIterable<Document> result = collection.find().sort(new Document("creditCardDetails.creditCardNumber", -1)).limit(1);
 
         // Extract the card number from the user document
         String lastCardNumber = "1688000000000001"; // Default to the starting sequence if no cards are found
@@ -41,7 +40,7 @@ public class CreditCardDetails {
         }
 
         // Increment the last card number by 2
-        long newCardNumber = Long.parseLong(lastCardNumber) + 2;
+        long newCardNumber = Long.parseLong(lastCardNumber) + 1;
 
         mongoClient.close();
 

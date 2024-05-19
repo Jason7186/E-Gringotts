@@ -31,7 +31,7 @@ public class DebitCardDetails {
         FindIterable<Document> result = collection.find().sort(new Document("debitCardDetail.debitCardNumber", -1)).limit(1);
 
         // Extract the card number from the user document
-        String lastCardNumber = "1688000000000000"; // Default to the starting sequence if no cards are found
+        String lastCardNumber = "1688000010000000"; // Default to the starting sequence if no cards are found
         for (Document doc : result) {
             Document debitCardDetails = (Document) doc.get("debitCardDetails");
             if (debitCardDetails != null && debitCardDetails.getString("debitCardNumber") != null) {
@@ -41,7 +41,7 @@ public class DebitCardDetails {
         }
 
         // Increment the last card number by 2
-        long newCardNumber = Long.parseLong(lastCardNumber) + 2;
+        long newCardNumber = Long.parseLong(lastCardNumber) + 1;
 
         mongoClient.close();
         return String.format("%016d", newCardNumber);

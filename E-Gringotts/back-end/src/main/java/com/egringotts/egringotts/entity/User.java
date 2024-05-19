@@ -16,7 +16,7 @@ public record User(
         LocalDate dateOfBirth,
         String email,
         String password,
-        int availableAmount,
+        double availableAmount,
         String userTier,
         String securityPin,
         DebitCardDetails debitCardDetails,

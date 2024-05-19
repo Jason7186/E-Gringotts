@@ -1,20 +1,30 @@
 package com.egringotts.egringotts.controller;
 
-import com.egringotts.egringotts.entity.DepositRequest;
-import com.egringotts.egringotts.entity.FriendRequest;
-import com.egringotts.egringotts.entity.TransferRequest;
+import com.egringotts.egringotts.entity.*;
 import com.egringotts.egringotts.service.TransactionService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
+
 @RestController
+@AllArgsConstructor
 @RequestMapping("/login-transaction")
 public class TransactionController {
     private final TransactionService transactionService;
-
-    public TransactionController(TransactionService transactionService) {
-        this.transactionService = transactionService;
+    private final UserController userController;
+    @GetMapping("/check-balance")
+    public ResponseEntity<?> checkCurrentAccountBalance() {
+        try {
+            User currentUser = userController.getLoggedInUser();
+            double balance = currentUser.availableAmount();
+            return ResponseEntity.ok(balance);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PostMapping("/instant-transfer")
@@ -37,11 +47,11 @@ public class TransactionController {
         }
     }
 
-    @GetMapping("/friends/{accountId}")
+    @GetMapping("/searchId/{accountId}")
     public ResponseEntity<?> searchUserByAccountId(@PathVariable String accountId) {
         try {
             String userName = transactionService.findUserNameByAccountId(accountId);
-            return ResponseEntity.ok(userName);
+            return ResponseEntity.ok(Collections.singletonMap("userName", userName));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
@@ -64,6 +74,30 @@ public class TransactionController {
             return ResponseEntity.ok("Delete Successful");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/oversea-transfer")
+    public ResponseEntity<?> handleOverseaTransfer(@RequestBody OverseaTransferRequest overseaTransferRequest) {
+        try {
+            transactionService.overseaTransfer(overseaTransferRequest);
+            return ResponseEntity.ok("Oversea transfer successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("transaction-history")
+    public ResponseEntity<?> getTransactionHistory(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String category) {
+        try {
+            List<Transaction> transactions = transactionService.getTransactionHistory(startDate, endDate, type, category);
+            return ResponseEntity.ok(transactions);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

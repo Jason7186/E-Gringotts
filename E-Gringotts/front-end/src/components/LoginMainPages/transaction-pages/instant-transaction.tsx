@@ -3,6 +3,7 @@ import Modal from "./Modal";
 import TransactionSidebar from "../transaction-sidebar/transaction-sidebar";
 import "./instant-transaction.css";
 import { useNavigate, useParams } from "react-router-dom";
+import InstantTransactionLoadingModal from "./instant-transaction-loading-modal";
 
 const InstantTransaction = () => {
   const [accountId, setAccountId] = useState("");
@@ -14,14 +15,36 @@ const InstantTransaction = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isTransferring, setIsTransferring] = useState(false);
   const [isTransferSuccessful, setIsTransferSuccessful] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const { id } = useParams();
-  const navigate = useNavigate;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
       setAccountId(id); // Set the accountId if passed via URL
+      fetchAccountName(id);
     }
   }, [id]);
+
+  const fetchAccountName = async (accountId: string) => {
+    setIsFetching(true);
+    try {
+      const response = await fetch(
+        `http://localhost:8080/login-transaction/searchId/${accountId}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch account details");
+      const data = await response.json();
+      console.log("API Response:", data);
+      setAccountName(data.userName);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Fetching account name failed:", error);
+      alert("User not found. Please enter a valid account ID");
+      return;
+    } finally {
+      setIsFetching(false); // Hide loading modal
+    }
+  };
 
   const handleAccountInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAccountId(e.target.value);
@@ -39,46 +62,62 @@ const InstantTransaction = () => {
     setCategories(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (
-      accountId.trim() === "" ||
-      amount.trim() === "" ||
-      details.trim() === "" ||
-      categories.trim() === ""
-    ) {
+    if (!accountId || !amount || !details || !categories) {
       alert("Please enter all fields.");
       return;
-    } else {
-      // Assuming you fetch the account name here or it's done earlier
-      {
-        /*fetchAccountName(accountId);*/
-      }
-      setIsConfirmOpen(true);
     }
+
+    if (!accountName) {
+      await fetchAccountName(accountId);
+    }
+
+    setIsConfirmOpen(true);
   };
 
-  const handleConfirm = () => {
-    setIsConfirmOpen(false);
-    setIsTransferring(true); // Start the transferring process
-    setTimeout(() => {
-      setIsTransferring(false);
-      setIsTransferSuccessful(true); // Assume transfer is successful after a delay
-      setTimeout(() => setIsTransferSuccessful(false), 3000); // Close success message after 3 seconds
-    }, 5000); // Simulating a transfer delay
-  };
+  const handleConfirm = async () => {
+    setIsModalOpen(false);
+    setIsTransferring(true);
 
-  {
-    /*const fetchAccountName = async (accountId: string) => {
+    const token = localStorage.getItem("token");
+    console.log({ token });
+    const transactionInfo = {
+      receiverAccountId: accountId,
+      amount: parseFloat(amount),
+      category: categories,
+      transactionDetails: details,
+    };
+
     try {
-      const response = await fetch(`your_backend_endpoint/${accountId}`); // Adjust URL accordingly
-      const data = await response.json();
-      setAccountName(data.accountName); // Adjust according to your actual data structure
+      const response = await fetch(
+        "http://localhost:8080/login-transaction/instant-transfer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(transactionInfo),
+        }
+      );
+      console.log("Sending transaction info:", JSON.stringify(transactionInfo));
+      if (response.ok) {
+        setIsTransferSuccessful(true);
+        setTimeout(() => setIsTransferSuccessful(false), 3000);
+        setTimeout(() => {
+          navigate("/login-main");
+        }, 3000);
+      } else {
+        throw new Error("Transaction failed");
+      }
     } catch (error) {
-      console.error("Failed to fetch account name", error);
+      console.error("Transaction error:", error);
+      alert("Transaction failed. Please try again later.");
+    } finally {
+      setIsTransferring(false);
     }
-  }; */
-  }
+  };
 
   return (
     <>
@@ -138,6 +177,7 @@ const InstantTransaction = () => {
         amount={amount}
         details={details}
         categories={categories}
+        accountName={accountName}
       />
       {isTransferring && (
         <div className="modal-overlay">
@@ -153,6 +193,7 @@ const InstantTransaction = () => {
           </div>
         </div>
       )}
+      <InstantTransactionLoadingModal isOpen={isFetching} />
     </>
   );
 };
