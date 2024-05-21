@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class DepositRequest {
     private Double amount;
+    private String securityPin;
 }

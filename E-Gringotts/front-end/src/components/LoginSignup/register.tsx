@@ -64,8 +64,9 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
       });
 
       if (response.ok) {
-        const user = await response.json();
-        console.log("Registration successful", user);
+        const result = await response.json();
+        localStorage.setItem("token", result.token);
+        console.log("Registration successful", result);
         setIsLoggedIn(true);
         sessionStorage.setItem("isLoggedIn", "true");
         setShowModal(true);

@@ -56,7 +56,7 @@ public class CommunicationService {
 
     public String createPdfInvoice(User user, Transaction transaction, double newBalance,
             OverseaTransferRequest overseaTransferRequest) throws IOException {
-        String pdfInvoice = "C:\\Users\\Teoh Jia Yong\\OneDrive\\Desktop\\Git E-Gringotts\\E-Gringotts\\E-Gringotts"
+        String pdfInvoice = "C:\\Users\\Teoh Jia Yong\\Downloads\\e-gringotts pdf components"
                 + transaction.getTransactionId() + ".pdf";
         PDDocument document = new PDDocument();
         PDPage page = new PDPage(PDRectangle.A4);
@@ -64,11 +64,11 @@ public class CommunicationService {
 
         // Load fonts and images
         PDType0Font fontRegular = PDType0Font.load(document, new File(
-                "C:\\Users\\Teoh Jia Yong\\OneDrive\\Desktop\\Git E-Gringotts\\E-Gringotts\\E-Gringotts\\Roboto-Regular.ttf"));
+                "C:\\Users\\Teoh Jia Yong\\Downloads\\e-gringotts pdf components\\Roboto-Regular.ttf"));
         PDType0Font fontBold = PDType0Font.load(document, new File(
-                "C:\\Users\\Teoh Jia Yong\\OneDrive\\Desktop\\Git E-Gringotts\\E-Gringotts\\E-Gringotts\\Roboto-Bold.ttf"));
+                "C:\\Users\\Teoh Jia Yong\\Downloads\\e-gringotts pdf components\\Roboto-Bold.ttf"));
         PDImageXObject logo = PDImageXObject.createFromFile(
-                "C:\\Users\\Teoh Jia Yong\\OneDrive\\Desktop\\Git E-Gringotts\\E-Gringotts\\E-Gringotts\\E-gringotts\\logo.png",
+                "C:\\Users\\Teoh Jia Yong\\Downloads\\e-gringotts pdf components\\E-gringotts logo.png",
                 document);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss");
@@ -77,28 +77,28 @@ public class CommunicationService {
         try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
             // Logo and header
             contentStream.drawImage(logo, 50, 750, 100, 50);
-            contentStream.setFont(fontBold, 18);
             contentStream.beginText();
+            contentStream.setFont(fontBold, 18);
             contentStream.newLineAtOffset(200, 770);
             contentStream.showText("E-gringotts");
             contentStream.endText();
 
             // Subheader
-            contentStream.setFont(fontRegular, 12);
             contentStream.beginText();
+            contentStream.setFont(fontRegular, 12);
             contentStream.newLineAtOffset(200, 750);
             contentStream.showText("Your only digital bank in the wizarding world");
             contentStream.endText();
 
             // Invoice and transaction details
-            contentStream.setFont(fontBold, 16);
             contentStream.beginText();
+            contentStream.setFont(fontBold, 16);
             contentStream.newLineAtOffset(50, 700);
             contentStream.showText("Invoice - " + transaction.getType());
             contentStream.endText();
 
-            contentStream.setFont(fontRegular, 12);
             contentStream.beginText();
+            contentStream.setFont(fontRegular, 12);
             contentStream.newLineAtOffset(50, 680);
             contentStream.showText("Transaction ID: " + transaction.getTransactionId());
             contentStream.newLineAtOffset(0, -20);
@@ -133,15 +133,15 @@ public class CommunicationService {
             contentStream.showText("From: " + transaction.getSender() + " (" + transaction.getSenderId() + ")");
             contentStream.newLineAtOffset(0, -20);
             contentStream.showText("To: " + transaction.getReceiver() + " (" + transaction.getReceiverId() + ")");
-            contentStream.endText();
             contentStream.newLineAtOffset(0, -20);
             contentStream.showText("Category: " + transaction.getCategory());
             contentStream.newLineAtOffset(0, -20);
             contentStream.showText("Transaction Details: " + transaction.getDetails());
+            contentStream.endText();
 
             // Footer
-            contentStream.setFont(fontRegular, 10);
             contentStream.beginText();
+            contentStream.setFont(fontRegular, 10);
             contentStream.newLineAtOffset(50, 50);
             contentStream.showText("Thank you for banking with us.");
             contentStream.newLineAtOffset(0, -20);
@@ -161,12 +161,13 @@ public class CommunicationService {
         helper.setTo(email);
         switch (transaction.getType()) {
             case "Deposit" -> helper.setSubject("Deposit Invoice");
-            case "Transfer" -> helper.setSubject("Transfer Invoice");
+            case "Instant Transfer" -> helper.setSubject("Transfer Invoice");
             case "Oversea Transfer" -> helper.setSubject("Oversea Transfer Invoice");
         }
         switch (transaction.getType()) {
             case "Deposit" -> helper.setText("Please find attached the invoice for your recent deposit.", true);
-            case "Transfer" -> helper.setText("Please find attached the invoice for your recent transfer.", true);
+            case "Instant Transfer" ->
+                helper.setText("Please find attached the invoice for your recent transfer.", true);
             case "Oversea Transfer" ->
                 helper.setText("Please find attached the invoice for your recent oversea transfer.", true);
         }

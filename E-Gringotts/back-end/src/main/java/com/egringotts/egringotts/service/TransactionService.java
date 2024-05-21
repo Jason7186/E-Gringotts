@@ -9,15 +9,18 @@ import com.egringotts.egringotts.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.ZoneId;
+import java.util.*;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -37,11 +40,10 @@ public class TransactionService {
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
-    public void deposit(Double amount) {
+    public void deposit(Double amount, String securityPin) {
         User currentUser = userController.getLoggedInUser();
-        if (currentUser == null) {
-            throw new RuntimeException("No authenticated user found");
-        }
+        if (currentUser.securityPin().compareTo(securityPin) != 0)
+            throw new RuntimeException("Incompatible securityPin");
 
         String transactionId = UUID.randomUUID().toString();
         double newAmount = currentUser.availableAmount() + amount;
@@ -52,18 +54,21 @@ public class TransactionService {
         communicationService.sendInvoiceEmail(currentUser, newTransaction, newAmount, null);
     }
 
-    public void instantTransfer(String accountId, Double amount, String category, String transactionDetails)
-            throws Exception {
+    public void instantTransfer(String accountId, Double amount, String category, String transactionDetails,
+            String securityPin) throws Exception {
         User sender = userController.getLoggedInUser();
-        if (sender == null) {
-            throw new RuntimeException("Invalid Operation");
-        }
+
+        if (securityPin.compareTo(sender.securityPin()) != 0)
+            throw new RuntimeException("Incompatible securityPin");
 
         Optional<User> receiverOpt = userRepository.findByAccountId(accountId);
         if (receiverOpt.isEmpty()) {
             throw new RuntimeException("Receiver account not found");
         }
         User receiver = receiverOpt.get();
+
+        if (sender.accountId().equals(receiver.accountId()))
+            throw new RuntimeException("Invalid operation of instant transferring to own account");
 
         if (sender.availableAmount() < amount) {
             throw new RuntimeException("Insufficient fund");
@@ -76,27 +81,16 @@ public class TransactionService {
         userService.updateBalance(receiver.id(), amount);
 
         String transactionId = UUID.randomUUID().toString();
-        Transaction senderTransaction = new Transaction(transactionId, -1 * amount, "Transfer", sender.name(),
+        Transaction senderTransaction = new Transaction(transactionId, -1 * amount, "Instant Transfer", sender.name(),
                 sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
-        Transaction receiverTransaction = new Transaction(transactionId, amount, "Transfer", sender.name(),
+        Transaction receiverTransaction = new Transaction(transactionId, amount, "Instant Transfer", sender.name(),
                 sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
         addTransaction(sender.accountId(), senderTransaction);
         addTransaction(receiver.accountId(), receiverTransaction);
 
         // Send email
-        try {
-            communicationService.sendInvoiceEmail(sender, senderTransaction, newSenderAmount, null);
-        } catch (Exception e) {
-            // Log the error and continue
-            System.err.println("Failed to send invoice email to sender: " + e.getMessage());
-        }
-
-        try {
-            communicationService.sendInvoiceEmail(receiver, receiverTransaction, newReceiverAmount, null);
-        } catch (Exception e) {
-            // Log the error and continue
-            System.err.println("Failed to send invoice email to receiver: " + e.getMessage());
-        }
+        communicationService.sendInvoiceEmail(sender, senderTransaction, newSenderAmount, null);
+        communicationService.sendInvoiceEmail(receiver, receiverTransaction, newReceiverAmount, null);
     }
 
     public void addFriend(String accountId) {
@@ -110,6 +104,10 @@ public class TransactionService {
             throw new RuntimeException("Friend account not found");
         }
 
+        if (currentUser.accountId().compareTo(accountId) == 0) {
+            throw new RuntimeException("Cannot add yourself as friend");
+        }
+
         User newFriend = friendOpt.get();
         Friend friend = new Friend(newFriend.name(), newFriend.accountId());
 
@@ -120,6 +118,13 @@ public class TransactionService {
     }
 
     public String findUserNameByAccountId(String accountId) {
+        String currentUserAccId = userController.getLoggedInUser().accountId();
+        if (currentUserAccId.compareTo(accountId) == 0)
+            throw new RuntimeException("Invalid operation of finding yourself");
+
+        if (accountId.length() != 8)
+            throw new RuntimeException("Invalid length of accountId. Please enter a valid accountId");
+
         Optional<User> userOpt = userRepository.findByAccountId(accountId);
         return userOpt.map(User::name).orElse(null);
     }
@@ -128,6 +133,8 @@ public class TransactionService {
         String currentUserId = userController.getLoggedInUser().accountId();
         if (currentUserId == null)
             throw new IllegalArgumentException("Account cannot be null");
+        if (currentUserId.compareTo(friendAccountId) == 0)
+            throw new RuntimeException("Cannot delete yourself");
 
         Query query = new Query(where("accountId").is(currentUserId));
         Update update = new Update().pull("friends", new Document("accountId", friendAccountId));
@@ -136,13 +143,17 @@ public class TransactionService {
 
     public void overseaTransfer(OverseaTransferRequest overseaTransferRequest) throws Exception {
         User sender = userController.getLoggedInUser();
-        if (sender == null)
-            throw new RuntimeException("Invalid user");
+        if (sender.securityPin().compareTo(overseaTransferRequest.getSecurityPin()) != 0)
+            throw new RuntimeException("Incompatible securityPin");
         Optional<User> receiverOpt = userRepository.findByAccountId(overseaTransferRequest.getReceiverAccountId());
         if (receiverOpt.isEmpty())
             throw new RuntimeException("Invalid target accountId");
 
         User receiver = receiverOpt.get();
+
+        if (sender.accountId().equals(receiver.accountId()))
+            throw new RuntimeException("Cannot oversea transfer to own account");
+
         double convertedAmount = currencyService.convertCurrency(overseaTransferRequest.getBaseCurrency(),
                 overseaTransferRequest.getToCurrency(), overseaTransferRequest.getAmount());
 
@@ -169,31 +180,54 @@ public class TransactionService {
                 overseaTransferRequest);
     }
 
-    public List<Transaction> getTransactionHistory(String startDate, String endDate, String type, String category) {
+    public List<Transaction> getTransactionsByAccountId(String startDateStr, String endDateStr, List<String> types,
+            List<String> categories) {
+        String currentUserAccId = userController.getLoggedInUser().accountId();
+        System.out.println(types);
+        System.out.println(categories);
 
-        Criteria criteria = new Criteria();
+        List<AggregationOperation> operations = new ArrayList<>();
 
-        // Assuming you have a method that fetches the currently logged-in user's
-        // account ID.
-        String currentUserId = userController.getLoggedInUser().accountId();
-        criteria.and("accountId").is(currentUserId);
+        // Match user by accountId
+        MatchOperation matchUser = Aggregation.match(Criteria.where("accountId").is(currentUserAccId));
+        operations.add(matchUser);
 
-        if (startDate != null && endDate != null) {
-            LocalDate start = LocalDate.parse(startDate);
-            LocalDate end = LocalDate.parse(endDate).plusDays(1); // Include the end date in the search
-            criteria.and("dateTime").gte(start.atStartOfDay()).lt(end.atStartOfDay());
+        // Unwind transactions
+        UnwindOperation unwindTransactions = Aggregation.unwind("transactions");
+        operations.add(unwindTransactions);
+
+        // Replace root with transactions
+        AggregationOperation replaceRootWithTransaction = context -> new Document("$replaceRoot",
+                new Document("newRoot", "$transactions"));
+        operations.add(replaceRootWithTransaction);
+
+        // Transaction category filter
+        if (categories != null && !categories.isEmpty()) {
+            Criteria categoryCriteria = Criteria.where("category").in(categories);
+            MatchOperation matchCategories = Aggregation.match(categoryCriteria);
+            operations.add(matchCategories);
         }
 
-        if (type != null) {
-            criteria.and("type").is(type);
+        // Date range filter
+        if (startDateStr != null && endDateStr != null) {
+            Date startDate = Date.from(LocalDate.parse(startDateStr).atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Date endDate = Date
+                    .from(LocalDate.parse(endDateStr).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+            MatchOperation matchDateRange = Aggregation.match(Criteria.where("dateTime").gte(startDate).lte(endDate));
+            operations.add(matchDateRange);
         }
 
-        if (category != null) {
-            criteria.and("category").is(category);
+        // Transaction type filter
+        if (types != null && !types.isEmpty()) {
+            MatchOperation matchType = Aggregation.match(Criteria.where("type").in(types));
+            operations.add(matchType);
         }
 
-        Query query = new Query(criteria);
-        return mongoTemplate.find(query, Transaction.class);
+        // Build aggregation
+        Aggregation aggregation = Aggregation.newAggregation(operations);
+
+        // Execute aggregation
+        return mongoTemplate.aggregate(aggregation, "userInfo", Transaction.class).getMappedResults();
     }
 
 }

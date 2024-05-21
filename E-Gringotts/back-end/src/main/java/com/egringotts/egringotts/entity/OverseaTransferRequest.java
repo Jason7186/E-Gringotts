@@ -12,4 +12,5 @@ public class OverseaTransferRequest {
     private String transactionDetails;
     private String baseCurrency;
     private String toCurrency;
+    private String securityPin;
 }

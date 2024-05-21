@@ -10,4 +10,5 @@ public class TransferRequest {
     private Double amount;
     private String category;
     private String transactionDetails;
+    private String securityPin;
 }

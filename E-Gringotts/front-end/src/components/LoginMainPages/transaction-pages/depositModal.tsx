@@ -1,11 +1,13 @@
 import React from "react";
-import "./Modal.css"; // Make sure to create this CSS file for modal styling
+import "./deposit-modal.css"; // Make sure to create this CSS file for modal styling
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   depositAmount: string;
+  pin: string;
+  handlePinChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const DepositModal: React.FC<ModalProps> = ({
@@ -13,19 +15,34 @@ const DepositModal: React.FC<ModalProps> = ({
   onClose,
   onConfirm,
   depositAmount,
+  pin,
+  handlePinChange,
 }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-contents">
+    <div className="deposit-modal-overlay">
+      <div className="deposit-modal-contents">
         <h2>Confirm Transaction</h2>
-        {/*<p><strong>Account Name:</strong> {accountName}</p>*/}
         <p>
           <strong>Deposit amount:</strong> {depositAmount} Galleons
         </p>
-        <button onClick={onConfirm}>Confirm</button>
-        <button onClick={onClose}>Cancel</button>
+        <input
+          type="password"
+          value={pin}
+          className="pin-input"
+          onChange={handlePinChange}
+          placeholder="Enter 6-digit PIN"
+          maxLength={6}
+        />
+        <div className="deposit-button-container">
+          <button className="button confirm" onClick={onConfirm}>
+            Confirm
+          </button>
+          <button className="button cancel" onClick={onClose}>
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );

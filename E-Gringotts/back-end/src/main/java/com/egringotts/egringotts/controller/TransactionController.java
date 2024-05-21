@@ -16,21 +16,24 @@ import java.util.List;
 public class TransactionController {
     private final TransactionService transactionService;
     private final UserController userController;
+
     @GetMapping("/check-balance")
     public ResponseEntity<?> checkCurrentAccountBalance() {
         try {
             User currentUser = userController.getLoggedInUser();
             double balance = currentUser.availableAmount();
             return ResponseEntity.ok(balance);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @PostMapping("/instant-transfer")
-    public ResponseEntity<?> handleInstantTransfer (@RequestBody TransferRequest transferRequest) {
+    public ResponseEntity<?> handleInstantTransfer(@RequestBody TransferRequest transferRequest) {
         try {
-            transactionService.instantTransfer(transferRequest.getReceiverAccountId(), transferRequest.getAmount(), transferRequest.getCategory(),transferRequest.getTransactionDetails());
+            transactionService.instantTransfer(transferRequest.getReceiverAccountId(), transferRequest.getAmount(),
+                    transferRequest.getCategory(), transferRequest.getTransactionDetails(),
+                    transferRequest.getSecurityPin());
             return ResponseEntity.ok("Transfer successful");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -38,9 +41,9 @@ public class TransactionController {
     }
 
     @PostMapping("/deposit")
-    public ResponseEntity<?> handleDeposit (@RequestBody DepositRequest depositRequest) {
+    public ResponseEntity<?> handleDeposit(@RequestBody DepositRequest depositRequest) {
         try {
-            transactionService.deposit(depositRequest.getAmount());
+            transactionService.deposit(depositRequest.getAmount(), depositRequest.getSecurityPin());
             return ResponseEntity.ok("Deposit Successful");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -54,6 +57,17 @@ public class TransactionController {
             return ResponseEntity.ok(Collections.singletonMap("userName", userName));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
+    @GetMapping("/retrieveFriends")
+    public ResponseEntity<?> currentLoggedInUserFriends() {
+        try {
+            User user = userController.getLoggedInUser();
+            List<Friend> friendList = user.friends();
+            return ResponseEntity.ok(friendList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -87,18 +101,18 @@ public class TransactionController {
         }
     }
 
-    @GetMapping("transaction-history")
+    @GetMapping("/transaction-history")
     public ResponseEntity<?> getTransactionHistory(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String category) {
+            @RequestParam(required = false) List<String> type,
+            @RequestParam(required = false) List<String> category) {
         try {
-            List<Transaction> transactions = transactionService.getTransactionHistory(startDate, endDate, type, category);
+            List<Transaction> transactions = transactionService.getTransactionsByAccountId(startDate, endDate, type,
+                    category);
             return ResponseEntity.ok(transactions);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
 }

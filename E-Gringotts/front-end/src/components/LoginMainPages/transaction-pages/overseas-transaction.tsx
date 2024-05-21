@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import OverseasModal from "./OverseasModal";
 import "./overseas-transaction.css";
 import { useNavigate } from "react-router-dom";
+import InstantTransactionLoadingModal from "./instant-transaction-loading-modal";
 
 const OverseasTransaction = () => {
   const [accountId, setAccountId] = useState("");
@@ -12,11 +13,17 @@ const OverseasTransaction = () => {
   const [categories, setCategories] = useState("");
   const [accountName, setAccountName] = useState("");
   const [galleonAmount, setGalleonAmount] = useState(0);
+  const [pin, setPin] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isTransferring, setIsTransferring] = useState(false);
   const [isTransferSuccessful, setIsTransferSuccessful] = useState(false);
-  const navigate = useNavigate;
+  const [isFetching, setIsFetching] = useState(false); //for account name
+  const [availableAmount, setAvailableAmount] = useState<number | undefined>(
+    undefined
+  );
+  const [isLoading, setIsLoading] = useState(true); //for loading available amount
+  const navigate = useNavigate();
 
   useEffect(() => {
     const calculateGalleons = () => {
@@ -31,8 +38,68 @@ const OverseasTransaction = () => {
     calculateGalleons();
   }, [amount, currency]);
 
+  useEffect(() => {
+    fetchAvailableAmount();
+  }, []);
+
   const handleAccountInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAccountId(e.target.value);
+  };
+
+  const fetchAccountName = async (accountId: string) => {
+    setIsFetching(true);
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(
+        `http://localhost:8080/login-transaction/searchId/${accountId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to fetch account details");
+      const data = await response.json();
+      console.log("API Response:", data);
+      setAccountName(data.userName);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Fetching account name failed:", error);
+      alert("User not found. Please enter a valid account ID");
+      return;
+    } finally {
+      setIsFetching(false); // Hide loading modal
+    }
+  };
+
+  const fetchAvailableAmount = async () => {
+    const token = localStorage.getItem("token");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(
+        "http://localhost:8080/login-transaction/check-balance",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to fetch account details");
+      const data = await response.json();
+      console.log("API Response:", data);
+      setAvailableAmount(data);
+    } catch (error) {
+      console.error("Error fetching available amount:", error);
+      setAvailableAmount(undefined);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleAmountInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +118,14 @@ const OverseasTransaction = () => {
     setCategories(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d{0,6}$/.test(value)) {
+      setPin(value);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
       accountId.trim() === "" ||
@@ -61,36 +135,64 @@ const OverseasTransaction = () => {
     ) {
       alert("Please enter all fields.");
       return;
-    } else {
-      // Assuming you fetch the account name here or it's done earlier
-      {
-        /*fetchAccountName(accountId);*/
-      }
-      setIsConfirmOpen(true);
     }
+    if (!accountName) {
+      await fetchAccountName(accountId);
+    }
+
+    setIsConfirmOpen(true);
   };
 
-  const handleConfirm = () => {
-    setIsConfirmOpen(false);
-    setIsTransferring(true); // Start the transferring process
-    setTimeout(() => {
-      setIsTransferring(false);
-      setIsTransferSuccessful(true); // Assume transfer is successful after a delay
-      setTimeout(() => setIsTransferSuccessful(false), 3000); // Close success message after 3 seconds
-    }, 3000); // Simulating a transfer delay
-  };
+  const handleConfirm = async () => {
+    if (pin.length !== 6) {
+      alert("Please enter a valid 6-digit PIN.");
+      return;
+    }
 
-  {
-    /*const fetchAccountName = async (accountId: string) => {
+    setIsModalOpen(false);
+    setIsTransferring(true);
+
+    const token = localStorage.getItem("token");
+    console.log({ token });
+    const transactionInfo = {
+      receiverAccountId: accountId,
+      amount: parseFloat(amount),
+      category: categories,
+      transactionDetails: details,
+      baseCurrency: currency,
+      toCurrency: "Galleon",
+      securityPin: pin,
+    };
+
     try {
-      const response = await fetch(`your_backend_endpoint/${accountId}`); // Adjust URL accordingly
-      const data = await response.json();
-      setAccountName(data.accountName); // Adjust according to your actual data structure
+      const response = await fetch(
+        "http://localhost:8080/login-transaction/oversea-transfer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(transactionInfo),
+        }
+      );
+      console.log("Sending transaction info:", JSON.stringify(transactionInfo));
+      if (response.ok) {
+        setIsTransferSuccessful(true);
+        setTimeout(() => setIsTransferSuccessful(false), 3000);
+        setTimeout(() => {
+          navigate("/login-main");
+        }, 3000);
+      } else {
+        throw new Error("Transaction failed");
+      }
     } catch (error) {
-      console.error("Failed to fetch account name", error);
+      console.error("Transaction error:", error);
+      alert("Transaction failed. Please try again later.");
+    } finally {
+      setIsTransferring(false);
     }
-  }; */
-  }
+  };
 
   return (
     <>
@@ -98,7 +200,16 @@ const OverseasTransaction = () => {
       <div className="login-transaction-background">
         <div className="overseas-transaction-container">
           <h1 style={{ color: "gold" }}>Overseas Transaction</h1>
-          <h3 style={{ color: "white" }}>Available amount :</h3>
+          {isLoading ? (
+            <h3 style={{ color: "white" }}>Loading available amount...</h3>
+          ) : (
+            <h3 style={{ color: "white" }}>
+              Available amount:{" "}
+              {availableAmount !== undefined
+                ? `${availableAmount.toFixed(2)} Galleons`
+                : "No data available"}
+            </h3>
+          )}
           <form onSubmit={handleSubmit}>
             <label htmlFor="account-id">Transfer to:</label>
             <input
@@ -157,15 +268,19 @@ const OverseasTransaction = () => {
         onConfirm={handleConfirm}
         accountId={accountId}
         amount={amount}
+        accountName={accountName}
         currency={currency}
         galleonAmount={galleonAmount}
         details={details}
         categories={categories}
+        pin={pin}
+        handlePinChange={handlePinChange}
       />
       {isTransferring && (
         <div className="modal-overlay">
           <div className="modal-contents">
             <h2>Transferring...</h2>
+            <p>Please give us a moment...</p>
           </div>
         </div>
       )}
@@ -173,9 +288,11 @@ const OverseasTransaction = () => {
         <div className="modal-overlay">
           <div className="modal-contents">
             <h2>Transfer Successful!</h2>
+            <p>Redirecting back to main page...</p>
           </div>
         </div>
       )}
+      <InstantTransactionLoadingModal isOpen={isFetching} />
     </>
   );
 };

@@ -1,6 +1,5 @@
 package com.egringotts.egringotts.controller;
 
-
 import com.egringotts.egringotts.config.JwtHelper;
 import com.egringotts.egringotts.entity.LoginDto;
 import com.egringotts.egringotts.entity.LoginResponse;
@@ -41,12 +40,14 @@ public class UserController {
             User newUser = userService.registerUser(userDto);
 
             // Authenticate the user immediately after registration
-            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
+            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(userDto.getEmail(),
+                    userDto.getPassword());
             Authentication auth = authenticationManager.authenticate(authReq);
             SecurityContextHolder.getContext().setAuthentication(auth);
+            String token = JwtHelper.generateToken(userDto.getEmail());
 
-            return ResponseEntity.ok(HttpStatus.CREATED);
-        }catch (Exception e) {
+            return ResponseEntity.ok(new LoginResponse(userDto.getEmail(), token));
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
@@ -54,17 +55,18 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginDto loginDto) {
         try {
-            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
+            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(loginDto.getEmail(),
+                    loginDto.getPassword());
             Authentication auth = authenticationManager.authenticate(authReq);
             SecurityContextHolder.getContext().setAuthentication(auth);
             String token = JwtHelper.generateToken(loginDto.getEmail());
             return ResponseEntity.ok(new LoginResponse(loginDto.getEmail(), token));
         } catch (AuthenticationException e) {
-            // This should return a ResponseEntity with an appropriate type that can handle error strings.
+            // This should return a ResponseEntity with an appropriate type that can handle
+            // error strings.
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse(null, "Login failed"));
         }
     }
-
 
     public User getLoggedInUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
