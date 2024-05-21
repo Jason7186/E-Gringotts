@@ -41,8 +41,9 @@ const LoginCurrencyConversion: React.FC = () => {
   };
 
   return (
-    <div className="background">
+    <div className="currency-conversion-background">
       <h1>Gringotts Exchange</h1>
+      <img src={graphPic} alt="Graph picture"></img>  
       <div className="exchange-container">
         <div className="choose-currency">
           <select value={fromCurrency} onChange={(e) => setFromCurrency(e.target.value)}>
@@ -60,7 +61,6 @@ const LoginCurrencyConversion: React.FC = () => {
             onChange={(e) => setAmount(Number(e.target.value))}/>
           <h3>{(amount * exchangeRate).toFixed(5)}</h3>
         </div>
-        <img src={graphPic} alt="Graph picture"></img>  
       </div>
     </div>
   );
