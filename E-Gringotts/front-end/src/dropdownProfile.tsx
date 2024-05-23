@@ -11,6 +11,7 @@ const DropDownProfile: React.FC<DropDownProfileProps> = ({ setIsLoggedIn }) => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     sessionStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("item");
     navigate("/");
   };
 

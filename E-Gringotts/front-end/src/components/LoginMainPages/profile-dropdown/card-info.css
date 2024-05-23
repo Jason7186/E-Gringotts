@@ -1,0 +1,66 @@
+.card-info-background {
+    position: relative;
+    background: linear-gradient(to bottom, #4b0082, #dda0dd);
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    z-index: 0;
+}
+
+.card-container {
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    right: 20px;
+    height: 80%;
+    margin-bottom: 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row; /* Changed from column to row */
+    justify-content: space-between; /* Ensure the containers take up the available space */
+    padding: 10px; /* Optional padding inside the container */
+    background: transparent; /* Optional background color for the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+}
+
+.debit-card-container {
+    height: 100%;
+    width: 49.5%;
+    padding: 20px; 
+    border: 1px solid #ccc;
+    border-radius: 8px; 
+    background: transparent;
+}
+
+.credit-card-container {
+    height: 100%;
+    width: 49.5%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: transparent; 
+}
+
+.debit-card{
+    margin-left: 35px;
+    margin-bottom: 20px;
+}
+
+.credit-card{
+    margin-left: 35px;
+    margin-bottom: 20px;
+}
+
+.debit-card-details p, .credit-card-details p{
+    margin: 0;
+    margin-left: 130px;
+}
+
+.edit {
+    cursor: pointer;
+    margin-left: 10px;
+}

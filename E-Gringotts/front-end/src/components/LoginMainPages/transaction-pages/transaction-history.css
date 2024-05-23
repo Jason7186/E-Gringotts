@@ -1,13 +1,103 @@
-.transaction-history-background{
-    background-image: url('transaction-history.jpg'); 
-    position: relative;
-    background-size: cover;
-    margin: 0;
-    padding: 0;
-    background-repeat: no-repeat;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 0;
+.transaction-history-background {
+  background-image: url('transaction-history.jpg');
+  position: relative;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  background-repeat: no-repeat;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+}
+
+.transaction-history-container {
+  position: relative;
+  width: 95%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Align items at the start */
+  margin-top: 70px;
+}
+
+.transaction-history-box {
+  flex-grow: 1; /* Take up remaining space on the left */
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: rgba(24, 0, 53, 0.925);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  height: 470px; /* Same height as selection box */
+}
+
+.transaction-item {
+  background-color: #aeacac; /* Adding background color for better visibility */
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.transaction-item + .transaction-item {
+  border-top: 1px solid #555; /* Adding separator between items */
+}
+
+.transaction-item p {
+  color: black; /* Change text color to white */
+  margin: 5px 0; /* Reduce the margin to make details closer to each other */
+}
+
+.selection-box {
+  width: 450px; /* Fixed width */
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #aeacac;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 470px;
+}
+
+.selection-box-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.selection-box-left,
+.selection-box-right {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+}
+
+.selection-box h3 {
+  margin-bottom: 10px;
+}
+
+.selection-box label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.selection-box input[type="date"],
+.selection-box input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.selection-box button {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.selection-box button:hover {
+  background-color: #0056b3;
 }
