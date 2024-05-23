@@ -14,12 +14,14 @@ public class DebitCardDetails {
     private String debitCardNumber;
     private LocalDate debitExpiryDate;
     private String cvv;
+    private double debitCardLimit;
 
     public DebitCardDetails() {
         int randomCVV = (int) (Math.random() * 1000);
         this.cvv = String.format("%03d",randomCVV);
         this.debitExpiryDate = LocalDate.now().plusYears(5);
         this.debitCardNumber = cardNumGenerator();
+        this.debitCardLimit = 1000;
     }
 
     private String cardNumGenerator() {

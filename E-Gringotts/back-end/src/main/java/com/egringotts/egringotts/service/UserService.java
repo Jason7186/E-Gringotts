@@ -1,16 +1,14 @@
 package com.egringotts.egringotts.service;
 
-
 import com.egringotts.egringotts.entity.*;
 import com.egringotts.egringotts.repository.UserRepository;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.internal.operation.AggregateOperation;
 import lombok.AllArgsConstructor;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -20,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -97,4 +95,60 @@ public class UserService {
         update.set("availableAmount", newBalance);
         mongoTemplate.updateFirst(query, update, User.class);
     }
+
+    public UserDashboardDto getUserDashboard(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserDashboardDto(
+                user.name(),
+                user.age(),
+                user.accountId(),
+                user.dateOfBirth(),
+                user.email(),
+                user.availableAmount(),
+                user.userTier()
+        );
+    }
+
+    public AdminDashboardDto getAdminDashBoard(String id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        long totalUser = getUserTotal();
+        long totalTransactions = getTotalTransactionsToday();
+        return new AdminDashboardDto(user.name(), user.age(), user.accountId(), user.dateOfBirth(), user.email(), user.availableAmount(),user.userTier(), totalUser, totalTransactions);
+    }
+
+    public long getUserTotal() {
+        return userRepository.count();
+    }
+
+    public long getTotalTransactionsToday() {
+        ZoneId localZone = ZoneId.of("Asia/Kuala_Lumpur"); // Replace with your local timezone
+        LocalDate today = LocalDate.now(localZone);
+        LocalDateTime startOfDay = today.atStartOfDay(localZone).toLocalDateTime();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX).atZone(localZone).toLocalDateTime();
+
+        // Match transactions within the date range
+        MatchOperation matchOperation = Aggregation.match(Criteria.where("transactions.dateTime").gte(startOfDay).lt(endOfDay));
+
+        // Unwind transactions array
+        UnwindOperation unwindOperation = Aggregation.unwind("transactions");
+
+        // Group by transactionId to avoid counting duplicates
+        GroupOperation groupOperation = Aggregation.group("transactions.transactionId");
+
+        // Build aggregation
+        Aggregation aggregation = Aggregation.newAggregation(matchOperation, unwindOperation, groupOperation);
+
+        // Execute aggregation
+        AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "userInfo", Document.class);
+
+        // Collect unique transactionIds
+        Set<String> uniqueTransactionIds = new HashSet<>();
+        for (Document document : results) {
+            uniqueTransactionIds.add(document.getString("_id"));
+        }
+
+        return uniqueTransactionIds.size();
+    }
+
+
 }

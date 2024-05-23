@@ -38,7 +38,7 @@ public class CommunicationService {
             OverseaTransferRequest overseaTransferRequest) {
         String pdfInvoice = null;
         try {
-            pdfInvoice = createPdfInvoice(user, newTransaction, newAmount, overseaTransferRequest);
+            pdfInvoice = createPdfInvoice(newTransaction, newAmount, overseaTransferRequest);
             sendEmailWithAttachment(newTransaction, user.email(), pdfInvoice);
         } catch (Exception e) {
             logger.error("Error in sending invoice email: ", e);
@@ -54,7 +54,7 @@ public class CommunicationService {
         }
     }
 
-    public String createPdfInvoice(User user, Transaction transaction, double newBalance,
+    public String createPdfInvoice(Transaction transaction, double newBalance,
             OverseaTransferRequest overseaTransferRequest) throws IOException {
         String pdfInvoice = "C:\\Users\\Teoh Jia Yong\\Downloads\\e-gringotts pdf components"
                 + transaction.getTransactionId() + ".pdf";
@@ -159,11 +159,13 @@ public class CommunicationService {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(email);
+
         switch (transaction.getType()) {
             case "Deposit" -> helper.setSubject("Deposit Invoice");
             case "Instant Transfer" -> helper.setSubject("Transfer Invoice");
             case "Oversea Transfer" -> helper.setSubject("Oversea Transfer Invoice");
         }
+
         switch (transaction.getType()) {
             case "Deposit" -> helper.setText("Please find attached the invoice for your recent deposit.", true);
             case "Instant Transfer" ->
@@ -172,7 +174,14 @@ public class CommunicationService {
                 helper.setText("Please find attached the invoice for your recent oversea transfer.", true);
         }
 
-        helper.addAttachment("invoice.pdf", new File(pdfInvoice));
+        File attachment = new File(pdfInvoice);
+        if (!attachment.exists()) {
+            throw new MessagingException("Invoice file not found: " + pdfInvoice);
+        }
+
+        helper.addAttachment("invoice.pdf", attachment);
+
         javaMailSender.send(message);
     }
+
 }

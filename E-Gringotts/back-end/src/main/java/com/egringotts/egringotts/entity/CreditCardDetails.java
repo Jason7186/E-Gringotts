@@ -13,12 +13,14 @@ public class CreditCardDetails {
     private String creditCardNumber;
     private LocalDate creditExpiryDate;
     private String cvv;
+    private double creditCardLimit;
 
     public CreditCardDetails() {
         this.creditCardNumber = cardNumGenerator();
         int randomCVV = (int) (Math.random() * 1000);
         this.cvv = String.format("%03d", randomCVV);
         this.creditExpiryDate = LocalDate.now().plusYears(5);
+        this.creditCardLimit = 1000;
     }
 
     private String cardNumGenerator() {

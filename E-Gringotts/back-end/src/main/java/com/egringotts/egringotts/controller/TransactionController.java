@@ -10,30 +10,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/login-transaction")
 public class TransactionController {
     private final TransactionService transactionService;
     private final UserController userController;
-
     @GetMapping("/check-balance")
     public ResponseEntity<?> checkCurrentAccountBalance() {
         try {
             User currentUser = userController.getLoggedInUser();
             double balance = currentUser.availableAmount();
             return ResponseEntity.ok(balance);
-        } catch (Exception e) {
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @PostMapping("/instant-transfer")
-    public ResponseEntity<?> handleInstantTransfer(@RequestBody TransferRequest transferRequest) {
+    public ResponseEntity<?> handleInstantTransfer (@RequestBody TransferRequest transferRequest) {
         try {
-            transactionService.instantTransfer(transferRequest.getReceiverAccountId(), transferRequest.getAmount(),
-                    transferRequest.getCategory(), transferRequest.getTransactionDetails(),
-                    transferRequest.getSecurityPin());
+            transactionService.instantTransfer(transferRequest.getReceiverAccountId(), transferRequest.getAmount(), transferRequest.getCategory(),transferRequest.getTransactionDetails(), transferRequest.getSecurityPin());
             return ResponseEntity.ok("Transfer successful");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -41,7 +39,7 @@ public class TransactionController {
     }
 
     @PostMapping("/deposit")
-    public ResponseEntity<?> handleDeposit(@RequestBody DepositRequest depositRequest) {
+    public ResponseEntity<?> handleDeposit (@RequestBody DepositRequest depositRequest) {
         try {
             transactionService.deposit(depositRequest.getAmount(), depositRequest.getSecurityPin());
             return ResponseEntity.ok("Deposit Successful");
@@ -108,8 +106,7 @@ public class TransactionController {
             @RequestParam(required = false) List<String> type,
             @RequestParam(required = false) List<String> category) {
         try {
-            List<Transaction> transactions = transactionService.getTransactionsByAccountId(startDate, endDate, type,
-                    category);
+            List<Transaction> transactions = transactionService.getTransactionsByAccountId(startDate, endDate, type, category);
             return ResponseEntity.ok(transactions);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

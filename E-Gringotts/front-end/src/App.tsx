@@ -20,7 +20,7 @@ import InstantTransaction from "./components/LoginMainPages/transaction-pages/in
 import Deposit from "./components/LoginMainPages/transaction-pages/deposit";
 import TransactionHistory from "./components/LoginMainPages/transaction-pages/transaction-history";
 import LoginProfile from "./components/LoginMainPages/login-profile";
-import CardDetails from "./components/LoginMainPages/card-info";
+import CardDetails from "./components/LoginMainPages/profile-dropdown/card-info";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {

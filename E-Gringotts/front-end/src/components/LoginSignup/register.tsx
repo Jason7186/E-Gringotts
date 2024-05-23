@@ -65,7 +65,7 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
 
       if (response.ok) {
         const result = await response.json();
-        localStorage.setItem("token", result.token);
+        localStorage.setItem("token", result.token); //save token
         console.log("Registration successful", result);
         setIsLoggedIn(true);
         sessionStorage.setItem("isLoggedIn", "true");

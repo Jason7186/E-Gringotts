@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -36,14 +37,13 @@ public class TransactionService {
 
     public void addTransaction(String accountId, Transaction newTransaction) {
         Query query = new Query(where("accountId").is(accountId));
-        Update update = new Update().addToSet("transactions", newTransaction);
+        Update update = new Update().addToSet("transactions",newTransaction);
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
     public void deposit(Double amount, String securityPin) {
         User currentUser = userController.getLoggedInUser();
-        if (currentUser.securityPin().compareTo(securityPin) != 0)
-            throw new RuntimeException("Incompatible securityPin");
+        if (currentUser.securityPin().compareTo(securityPin) != 0) throw new RuntimeException("Incompatible securityPin");
 
         String transactionId = UUID.randomUUID().toString();
         double newAmount = currentUser.availableAmount() + amount;
@@ -53,13 +53,10 @@ public class TransactionService {
         mongoTemplate.updateFirst(query, update, User.class);
         communicationService.sendInvoiceEmail(currentUser, newTransaction, newAmount, null);
     }
-
-    public void instantTransfer(String accountId, Double amount, String category, String transactionDetails,
-            String securityPin) throws Exception {
+    public void instantTransfer (String accountId, Double amount, String category, String transactionDetails, String securityPin) throws Exception {
         User sender = userController.getLoggedInUser();
 
-        if (securityPin.compareTo(sender.securityPin()) != 0)
-            throw new RuntimeException("Incompatible securityPin");
+        if (securityPin.compareTo(sender.securityPin()) != 0) throw new RuntimeException("Incompatible securityPin");
 
         Optional<User> receiverOpt = userRepository.findByAccountId(accountId);
         if (receiverOpt.isEmpty()) {
@@ -67,8 +64,7 @@ public class TransactionService {
         }
         User receiver = receiverOpt.get();
 
-        if (sender.accountId().equals(receiver.accountId()))
-            throw new RuntimeException("Invalid operation of instant transferring to own account");
+        if (sender.accountId().equals(receiver.accountId())) throw new RuntimeException("Invalid operation of instant transferring to own account");
 
         if (sender.availableAmount() < amount) {
             throw new RuntimeException("Insufficient fund");
@@ -81,14 +77,12 @@ public class TransactionService {
         userService.updateBalance(receiver.id(), amount);
 
         String transactionId = UUID.randomUUID().toString();
-        Transaction senderTransaction = new Transaction(transactionId, -1 * amount, "Instant Transfer", sender.name(),
-                sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
-        Transaction receiverTransaction = new Transaction(transactionId, amount, "Instant Transfer", sender.name(),
-                sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
+        Transaction senderTransaction = new Transaction(transactionId, -1*amount, "Instant Transfer", sender.name(), sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
+        Transaction receiverTransaction = new Transaction(transactionId, amount, "Instant Transfer", sender.name(), sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
         addTransaction(sender.accountId(), senderTransaction);
         addTransaction(receiver.accountId(), receiverTransaction);
 
-        // Send email
+        //Send email
         communicationService.sendInvoiceEmail(sender, senderTransaction, newSenderAmount, null);
         communicationService.sendInvoiceEmail(receiver, receiverTransaction, newReceiverAmount, null);
     }
@@ -119,11 +113,9 @@ public class TransactionService {
 
     public String findUserNameByAccountId(String accountId) {
         String currentUserAccId = userController.getLoggedInUser().accountId();
-        if (currentUserAccId.compareTo(accountId) == 0)
-            throw new RuntimeException("Invalid operation of finding yourself");
+        if (currentUserAccId.compareTo(accountId) == 0) throw new RuntimeException("Invalid operation of finding yourself");
 
-        if (accountId.length() != 8)
-            throw new RuntimeException("Invalid length of accountId. Please enter a valid accountId");
+        if (accountId.length() != 8) throw new RuntimeException("Invalid length of accountId. Please enter a valid accountId");
 
         Optional<User> userOpt = userRepository.findByAccountId(accountId);
         return userOpt.map(User::name).orElse(null);
@@ -131,57 +123,44 @@ public class TransactionService {
 
     public void deleteFriend(String friendAccountId) {
         String currentUserId = userController.getLoggedInUser().accountId();
-        if (currentUserId == null)
-            throw new IllegalArgumentException("Account cannot be null");
-        if (currentUserId.compareTo(friendAccountId) == 0)
-            throw new RuntimeException("Cannot delete yourself");
+        if (currentUserId == null) throw new IllegalArgumentException("Account cannot be null");
+        if (currentUserId.compareTo(friendAccountId) == 0 ) throw new RuntimeException("Cannot delete yourself");
+
 
         Query query = new Query(where("accountId").is(currentUserId));
-        Update update = new Update().pull("friends", new Document("accountId", friendAccountId));
-        mongoTemplate.updateFirst(query, update, User.class);
+        Update update = new Update().pull("friends",new Document("accountId", friendAccountId));
+        mongoTemplate.updateFirst(query,update, User.class);
     }
 
     public void overseaTransfer(OverseaTransferRequest overseaTransferRequest) throws Exception {
         User sender = userController.getLoggedInUser();
-        if (sender.securityPin().compareTo(overseaTransferRequest.getSecurityPin()) != 0)
-            throw new RuntimeException("Incompatible securityPin");
+        if (sender.securityPin().compareTo(overseaTransferRequest.getSecurityPin()) != 0 ) throw new RuntimeException("Incompatible securityPin");
         Optional<User> receiverOpt = userRepository.findByAccountId(overseaTransferRequest.getReceiverAccountId());
-        if (receiverOpt.isEmpty())
-            throw new RuntimeException("Invalid target accountId");
+        if (receiverOpt.isEmpty()) throw new RuntimeException("Invalid target accountId");
 
         User receiver = receiverOpt.get();
 
-        if (sender.accountId().equals(receiver.accountId()))
-            throw new RuntimeException("Cannot oversea transfer to own account");
+        if (sender.accountId().equals(receiver.accountId())) throw new RuntimeException("Cannot oversea transfer to own account");
 
-        double convertedAmount = currencyService.convertCurrency(overseaTransferRequest.getBaseCurrency(),
-                overseaTransferRequest.getToCurrency(), overseaTransferRequest.getAmount());
+        double convertedAmount = currencyService.convertCurrency(overseaTransferRequest.getBaseCurrency(), overseaTransferRequest.getToCurrency(), overseaTransferRequest.getAmount());
 
-        if (sender.availableAmount() < convertedAmount)
-            throw new RuntimeException("Insufficient balance");
+        if (sender.availableAmount() < convertedAmount) throw new RuntimeException("Insufficient balance");
 
-        userService.updateBalance(sender.id(), -1 * convertedAmount);
+        userService.updateBalance(sender.id(), -1*convertedAmount);
         userService.updateBalance(receiver.id(), convertedAmount);
 
         String transactionId = UUID.randomUUID().toString();
-        Transaction senderTransaction = new Transaction(transactionId, -1 * convertedAmount, "Oversea Transfer",
-                sender.name(), sender.accountId(), receiver.name(), receiver.accountId(),
-                overseaTransferRequest.getCategory(), overseaTransferRequest.getTransactionDetails());
-        Transaction receiverTransaction = new Transaction(transactionId, convertedAmount, "Oversea Transfer",
-                sender.name(), sender.accountId(), receiver.name(), receiver.accountId(),
-                overseaTransferRequest.getCategory(), overseaTransferRequest.getTransactionDetails());
+        Transaction senderTransaction = new Transaction(transactionId, -1*convertedAmount, "Oversea Transfer", sender.name(), sender.accountId(), receiver.name(), receiver.accountId(), overseaTransferRequest.getCategory(), overseaTransferRequest.getTransactionDetails());
+        Transaction receiverTransaction = new Transaction(transactionId, convertedAmount, "Oversea Transfer", sender.name(), sender.accountId(), receiver.name(), receiver.accountId(), overseaTransferRequest.getCategory(), overseaTransferRequest.getTransactionDetails());
 
         addTransaction(sender.accountId(), senderTransaction);
         addTransaction(receiver.accountId(), receiverTransaction);
 
-        communicationService.sendInvoiceEmail(sender, senderTransaction, sender.availableAmount(),
-                overseaTransferRequest);
-        communicationService.sendInvoiceEmail(receiver, receiverTransaction, receiver.availableAmount(),
-                overseaTransferRequest);
+        communicationService.sendInvoiceEmail(sender, senderTransaction, sender.availableAmount(), overseaTransferRequest);
+        communicationService.sendInvoiceEmail(receiver, receiverTransaction, receiver.availableAmount(), overseaTransferRequest);
     }
 
-    public List<Transaction> getTransactionsByAccountId(String startDateStr, String endDateStr, List<String> types,
-            List<String> categories) {
+    public List<Transaction> getTransactionsByAccountId(String startDateStr, String endDateStr, List<String> types, List<String> categories) {
         String currentUserAccId = userController.getLoggedInUser().accountId();
         System.out.println(types);
         System.out.println(categories);
@@ -197,8 +176,7 @@ public class TransactionService {
         operations.add(unwindTransactions);
 
         // Replace root with transactions
-        AggregationOperation replaceRootWithTransaction = context -> new Document("$replaceRoot",
-                new Document("newRoot", "$transactions"));
+        AggregationOperation replaceRootWithTransaction = context -> new Document("$replaceRoot", new Document("newRoot", "$transactions"));
         operations.add(replaceRootWithTransaction);
 
         // Transaction category filter
@@ -211,8 +189,7 @@ public class TransactionService {
         // Date range filter
         if (startDateStr != null && endDateStr != null) {
             Date startDate = Date.from(LocalDate.parse(startDateStr).atStartOfDay(ZoneId.systemDefault()).toInstant());
-            Date endDate = Date
-                    .from(LocalDate.parse(endDateStr).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Date endDate = Date.from(LocalDate.parse(endDateStr).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
             MatchOperation matchDateRange = Aggregation.match(Criteria.where("dateTime").gte(startDate).lte(endDate));
             operations.add(matchDateRange);
         }
