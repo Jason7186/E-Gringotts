@@ -1,5 +1,5 @@
 .currency-conversion-background {
-    background-image: url(..\MainPageBackground.png); /* Update with your image path */
+    background-image: url(../MainPageBackground.png); /* Update with your image path */
     background-size: cover; /* Cover the entire page */
     background-position: relative; /* Center the background image */
     background-repeat: no-repeat; /* Do not repeat the image */
@@ -77,4 +77,5 @@
     width: 220px;
     padding: 20px;
     font-size: 1.5rem;
+    overflow: auto;
 }

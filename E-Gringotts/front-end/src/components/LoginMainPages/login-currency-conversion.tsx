@@ -9,7 +9,7 @@ interface CurrencyRates {
 
 const LoginCurrencyConversion: React.FC = () => {
 
-  const [amount, setAmount] = useState<number>(1);
+  const [amount, setAmount] = useState<number | null>(null);
   const [fromCurrency, setFromCurrency] = useState<string>('Galleon');
   const [toCurrency, setToCurrency] = useState<string>('Knut');
   const [exchangeRate, setExchangeRate] = useState<number>(493);
@@ -57,9 +57,10 @@ const LoginCurrencyConversion: React.FC = () => {
         <div className="output">
           <input
             type="number"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}/>
-          <h3>{(amount * exchangeRate).toFixed(5)}</h3>
+            placeholder="Enter a value"
+            value={amount === null ? '' : amount}
+            onChange={(e) => setAmount(e.target.value === '' ? null : Number(e.target.value))}/>
+          <h3>{amount === null ? (0).toFixed(5) : (amount * exchangeRate).toFixed(5)}</h3>
         </div>
       </div>
     </div>
