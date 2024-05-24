@@ -13,7 +13,6 @@ interface LoginProps {
 const Login = ({ setIsLoggedIn }: LoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [pin, setPin] = useState("");
   const [showModal, setShowModal] = useState(false); //logged in successful modal
   const [isLoading, setIsLoading] = useState(false); //loading details modal
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (email.trim() === "" || password.trim() === "" || pin.trim() === "") {
+    if (email.trim() === "" || password.trim() === "") {
       alert("Please enter all fields.");
       return;
     }
@@ -31,7 +30,6 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
     const loginDetails = {
       email: email,
       password: password,
-      pin: pin,
     };
 
     try {
@@ -66,13 +64,6 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
     }
   };
 
-  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d{0,6}$/.test(value)) {
-      setPin(value);
-    }
-  };
-
   return (
     <div className="background">
       <div className="container">
@@ -98,16 +89,6 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <img src={password_icon} alt="" />
-              <input
-                type="password"
-                placeholder="6 digit secure pin"
-                value={pin}
-                onChange={handlePinChange}
-                maxLength={6}
               />
             </div>
             <button

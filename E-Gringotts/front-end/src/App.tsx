@@ -19,8 +19,9 @@ import OverseasTransaction from "./components/LoginMainPages/transaction-pages/o
 import InstantTransaction from "./components/LoginMainPages/transaction-pages/instant-transaction";
 import Deposit from "./components/LoginMainPages/transaction-pages/deposit";
 import TransactionHistory from "./components/LoginMainPages/transaction-pages/transaction-history";
-import LoginProfile from "./components/LoginMainPages/login-profile";
 import CardDetails from "./components/LoginMainPages/profile-dropdown/card-info";
+import AdminDashboard from "./components/LoginMainPages/profile-dropdown/admin-dashboard";
+import UserDashboard from "./components/LoginMainPages/profile-dropdown/user-dashboard";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -83,8 +84,15 @@ function App() {
             path="/instant-transaction/:id"
             element={<InstantTransaction />}
           />
-          <Route path="/login/profile" element={<LoginProfile />}></Route>
           <Route path="/login/card-details" element={<CardDetails />}></Route>
+          <Route
+            path="/login/admin-dashboard"
+            element={<AdminDashboard />}
+          ></Route>
+          <Route
+            path="/login/user-dashboard"
+            element={<UserDashboard />}
+          ></Route>
         </Routes>
       </div>
     </>

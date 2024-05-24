@@ -1,0 +1,40 @@
+.dashboard-background {
+    position: relative;
+    background: linear-gradient(to bottom, #4b0082, #dda0dd);
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    z-index: 0;
+}
+
+.dashboard-container {
+    position: absolute;
+    margin-top: 120px;
+    margin-left: 390px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    width: 500px;
+    text-align: center;
+}
+  
+.dashboard-container h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+  
+.dashboard-container p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #666;
+}
+  
+.dashboard-container p span {
+    font-weight: bold;
+    color: #000;
+}
+  
