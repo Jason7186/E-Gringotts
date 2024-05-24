@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/admin")
+@RequestMapping("/admin")
 public class AdminController {
 
     private CurrencyService currencyService;
@@ -23,10 +23,12 @@ public class AdminController {
     @PostMapping("/addCurrency")
     public ResponseEntity<String> addCurrencyRate(@RequestBody CurrencyRateRequest rateRequest) {
         try {
-            currencyService.addCurrencyWithRate(rateRequest.getFromCurrency(), rateRequest.getToCurrency(), rateRequest.getRate());
+            currencyService.addCurrencyWithRate(rateRequest.getFromCurrency(), rateRequest.getToCurrency(),
+                    rateRequest.getRate());
             return ResponseEntity.ok("Rate added successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add rate: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to add rate: " + e.getMessage());
         }
     }
 

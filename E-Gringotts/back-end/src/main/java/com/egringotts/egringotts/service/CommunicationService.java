@@ -56,7 +56,7 @@ public class CommunicationService {
 
     public String createPdfInvoice(Transaction transaction, double newBalance,
             OverseaTransferRequest overseaTransferRequest) throws IOException {
-        String pdfInvoice = "C:\\Users\\Teoh Jia Yong\\Downloads\\e-gringotts pdf components"
+        String pdfInvoice = "C:\\Users\\Teoh Jia Yong\\OneDrive\\Desktop\\E Gringotts PDF"
                 + transaction.getTransactionId() + ".pdf";
         PDDocument document = new PDDocument();
         PDPage page = new PDPage(PDRectangle.A4);
@@ -64,11 +64,11 @@ public class CommunicationService {
 
         // Load fonts and images
         PDType0Font fontRegular = PDType0Font.load(document, new File(
-                "C:\\Users\\Teoh Jia Yong\\Downloads\\e-gringotts pdf components\\Roboto-Regular.ttf"));
+                "C:\\Users\\Teoh Jia Yong\\OneDrive\\Desktop\\E Gringotts PDF\\Roboto-Regular.ttf"));
         PDType0Font fontBold = PDType0Font.load(document, new File(
-                "C:\\Users\\Teoh Jia Yong\\Downloads\\e-gringotts pdf components\\Roboto-Bold.ttf"));
+                "C:\\Users\\Teoh Jia Yong\\OneDrive\\Desktop\\E Gringotts PDF\\Roboto-Bold.ttf"));
         PDImageXObject logo = PDImageXObject.createFromFile(
-                "C:\\Users\\Teoh Jia Yong\\Downloads\\e-gringotts pdf components\\E-gringotts logo.png",
+                "C:\\Users\\Teoh Jia Yong\\OneDrive\\Desktop\\E Gringotts PDF\\E-gringotts logo.png",
                 document);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss");

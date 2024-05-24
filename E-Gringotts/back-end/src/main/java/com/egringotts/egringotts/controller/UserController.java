@@ -148,6 +148,17 @@ public class UserController {
         }
     }
 
+    @GetMapping("/getUserRole")
+    public ResponseEntity<?> getUserRole() {
+        try {
+            User currentUser = getLoggedInUser();
+            Role currentRole = currentUser.roles().get(0);
+            return ResponseEntity.ok(currentRole);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     public User getLoggedInUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userEmail = null;

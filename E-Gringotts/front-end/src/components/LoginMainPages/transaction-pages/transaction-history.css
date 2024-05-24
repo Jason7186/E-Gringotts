@@ -26,7 +26,7 @@
   width: 100%;
   border: 1px solid #ccc;
   padding: 20px;
-  background-color: rgba(24, 0, 53, 0.925);
+  background: linear-gradient(to bottom,#822582, #2f014f);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto;

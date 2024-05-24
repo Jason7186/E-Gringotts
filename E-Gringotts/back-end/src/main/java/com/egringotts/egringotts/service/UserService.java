@@ -16,10 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 
 @Service
@@ -72,7 +69,6 @@ public class UserService {
         return String.format("%08d", newAccId);
     }
 
-
     private int calculateAge(LocalDate dateOfBirth) {
         return (LocalDate.now().getYear() - dateOfBirth.getYear());
     }
@@ -105,15 +101,15 @@ public class UserService {
                 user.dateOfBirth(),
                 user.email(),
                 user.availableAmount(),
-                user.userTier()
-        );
+                user.userTier());
     }
 
     public AdminDashboardDto getAdminDashBoard(String id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         long totalUser = getUserTotal();
         long totalTransactions = getTotalTransactionsToday();
-        return new AdminDashboardDto(user.name(), user.age(), user.accountId(), user.dateOfBirth(), user.email(), user.availableAmount(),user.userTier(), totalUser, totalTransactions);
+        return new AdminDashboardDto(user.name(), user.age(), user.accountId(), user.dateOfBirth(), user.email(),
+                user.availableAmount(), user.userTier(), totalUser, totalTransactions);
     }
 
     public long getUserTotal() {
@@ -121,34 +117,45 @@ public class UserService {
     }
 
     public long getTotalTransactionsToday() {
-        ZoneId localZone = ZoneId.of("Asia/Kuala_Lumpur"); // Replace with your local timezone
-        LocalDate today = LocalDate.now(localZone);
-        LocalDateTime startOfDay = today.atStartOfDay(localZone).toLocalDateTime();
-        LocalDateTime endOfDay = today.atTime(LocalTime.MAX).atZone(localZone).toLocalDateTime();
+        LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        LocalDateTime startOfDay = today.atStartOfDay(ZoneOffset.UTC).toLocalDateTime();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX).atZone(ZoneOffset.UTC).toLocalDateTime();
+
+        // Convert LocalDateTime to Date for MongoDB
+        Date startDate = Date.from(startOfDay.toInstant(ZoneOffset.UTC));
+        Date endDate = Date.from(endOfDay.toInstant(ZoneOffset.UTC));
 
         // Match transactions within the date range
-        MatchOperation matchOperation = Aggregation.match(Criteria.where("transactions.dateTime").gte(startOfDay).lt(endOfDay));
+        MatchOperation matchOperation = Aggregation.match(
+                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate));
 
         // Unwind transactions array
         UnwindOperation unwindOperation = Aggregation.unwind("transactions");
 
-        // Group by transactionId to avoid counting duplicates
+        // Match the transaction date again after unwinding (in case nested arrays
+        // exist)
+        MatchOperation matchTransactionDate = Aggregation.match(
+                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate));
+
+        // Group by transactionId to count unique transactions
         GroupOperation groupOperation = Aggregation.group("transactions.transactionId");
 
+        // Count the unique transaction IDs
+        CountOperation countOperation = Aggregation.count().as("totalTransactions");
+
         // Build aggregation
-        Aggregation aggregation = Aggregation.newAggregation(matchOperation, unwindOperation, groupOperation);
+        Aggregation aggregation = Aggregation.newAggregation(
+                matchOperation,
+                unwindOperation,
+                matchTransactionDate,
+                groupOperation,
+                countOperation);
 
         // Execute aggregation
         AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "userInfo", Document.class);
 
-        // Collect unique transactionIds
-        Set<String> uniqueTransactionIds = new HashSet<>();
-        for (Document document : results) {
-            uniqueTransactionIds.add(document.getString("_id"));
-        }
-
-        return uniqueTransactionIds.size();
+        Document result = results.getUniqueMappedResult();
+        return result != null ? result.getInteger("totalTransactions") : 0;
     }
-
 
 }
