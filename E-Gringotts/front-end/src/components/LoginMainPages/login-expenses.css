@@ -39,7 +39,19 @@
     border-radius: 8px;
     width: 450px;
     height: 95%;
-  }
+}
+
+.date-selection button {
+    font-size: 1.3rem;
+    margin-top: 20px;
+    margin-right: 70%;
+    border-radius: 4px;
+    font-weight: normal;
+    color: black;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.5 ease;
+}
 
 .expenditure-analysis {
     background-color: #7367F0; /* Lighter purple for the component backgrounds */
@@ -79,7 +91,7 @@
 .date-input label {
     padding-right: 15%;
     padding-bottom: 8px;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: bold;
     color: rgb(255, 255, 255);
 }

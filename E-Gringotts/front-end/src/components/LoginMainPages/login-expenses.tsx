@@ -78,17 +78,90 @@ const PieChart: React.FC<PieChartProps> = ( {data} ) => {
   );
 };
 
-const formatDate = (date: Date) => {
-  return date.toISOString().split('T')[0];
-};
+interface Transaction {
+  transactionId: string;
+  dateTime: string;
+  amount: number;
+  type: string;
+  sender: string;
+  senderId: string;
+  receiver: string;
+  receiverId: string;
+  category: string;
+  details: string;
+}
+
+type TransactionsData = Transaction[][];
+
+function processData(data: TransactionsData): Record<string, number> {
+  const categoryTotals: Record<string, number> = {};
+
+  data.forEach((transactionArray: Transaction[]) => {
+    transactionArray.forEach((transaction: Transaction) => {
+
+      const amount = Math.abs(transaction.amount);
+
+      if (categoryTotals[transaction.category]) {
+        categoryTotals[transaction.category] += amount;
+      } else {
+        categoryTotals[transaction.category] = amount;
+      }
+    });
+  });
+
+  return categoryTotals;
+}
+
 
 const LoginExpenses: React.FC = () => {
-  const [startDate, setStartDate] = useState<string>(formatDate(new Date()));
-  const [endDate, setEndDate] = useState<string>(formatDate(new Date()));
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
   const [data, setData] = useState({
-    labels: ['Fund transfer', 'Food'], // Example labels
-    values: [123, 456] // Example data
+    labels: [], // Example labels
+    values: [] // Example data
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const sendDate = async () => {
+    const token = localStorage.getItem("token");
+    const url = "http://localhost:8080/login/expenses";
+    const date = {
+      startDate,
+      endDate
+    };
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(date)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('i dont know what im doing');
+      }
+
+      const responseData = await response.json();
+      console.log('i think i got the file');
+      
+      const categoryTotals = processData(responseData);
+      const chartData: ChartData = {
+        labels: Object.keys(categoryTotals),
+        values: Object.values(categoryTotals),
+      };
+      setData(chartData);
+
+    } catch (error) {
+      console.error('what is this again');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="expenses-background">
@@ -113,10 +186,17 @@ const LoginExpenses: React.FC = () => {
               onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
+          <button onClick={sendDate}>Submit</button>
         </div>
         <div className="expenditure-analysis">
           <h2>Expenditure Analysis:</h2>
-          <PieChart data={data}></PieChart>
+          {isLoading ? (
+            <div style={{ width: '100%', height: '85%', backgroundColor: 'white', color: 'black', fontSize: '3rem', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              Loading...
+            </div>  
+          ) : (
+            <PieChart data={data} /> 
+          )} 
         </div>
       </div>
     </div>
