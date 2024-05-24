@@ -1,9 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import "./dashboard.css";
+import "./admin-dashboard.css";
 import "../transaction-pages/Modal.css";
+import PieChart from "./PieChart";
 
 const AdminDashboard = () => {
+  type UserTierDataType = [number, number, number];
+  type TransactionDataType = [number, number, number];
+
   const [name, setName] = useState("");
   const [age, setAge] = useState();
   const [accountId, setAccountId] = useState("");
@@ -14,6 +18,10 @@ const AdminDashboard = () => {
   const [totalUser, setTotalUser] = useState();
   const [transactionPerDay, setTransactionPerDay] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [userTierData, setUserTierData] = useState<UserTierDataType>([0, 0, 0]);
+  const userTierLabel = ["Silver Snitch", "Golden Galleon", "Platinum Patronus"];
+  const [TransactionData, setTransactionData] = useState<TransactionDataType>([0, 0, 0]);
+  const TransactionLabel = ["Deposit", "Instant Transfer", "Oversea Transfer"];
 
   useEffect(() => {
     getAdminDetails();
@@ -43,6 +51,8 @@ const AdminDashboard = () => {
         setTier(data.userTier);
         setTotalUser(data.userTotalNum);
         setTransactionPerDay(data.transactionsTotalPerDay);
+        setUserTierData([data.silverCount, data.goldCount, data.platinumCount]);
+        setTransactionData([data.depositPerDay, data.instantTransferPerDay, data.overseaTransferPerDay]);
       } else {
         alert("Error in fetching details. Please try again later");
         throw new Error("Network response was not ok");
@@ -55,8 +65,8 @@ const AdminDashboard = () => {
   };
   return (
     <>
-      <div className="dashboard-background">
-        <div className="dashboard-container">
+      <div className="admin-dashboard-background">
+        <div className="admin-dashboard-container">
           <h1>Admin Dashboard</h1>
           <div>
             <p>
@@ -86,6 +96,16 @@ const AdminDashboard = () => {
             <p>
               Transactions Today: <span>{transactionPerDay}</span>
             </p>
+          </div>
+        </div>
+        <div className="chart-container">
+          <div className="user-tier-chart-container">
+            <h3>User Tiers</h3>
+            <PieChart data={userTierData} labels={userTierLabel}/>
+          </div>
+          <div className="user-tier-chart-container">
+            <h3>Transactions Today</h3>
+            <PieChart data={TransactionData} labels={TransactionLabel}/>
           </div>
         </div>
       </div>

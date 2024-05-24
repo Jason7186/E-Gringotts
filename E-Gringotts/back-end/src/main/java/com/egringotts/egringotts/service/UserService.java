@@ -2,13 +2,19 @@ package com.egringotts.egringotts.service;
 
 import com.egringotts.egringotts.entity.*;
 import com.egringotts.egringotts.repository.UserRepository;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
 import lombok.AllArgsConstructor;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+
+import com.mongodb.client.model.Aggregates;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -107,16 +113,62 @@ public class UserService {
     public AdminDashboardDto getAdminDashBoard(String id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         long totalUser = getUserTotal();
-        long totalTransactions = getTotalTransactionsToday();
-        return new AdminDashboardDto(user.name(), user.age(), user.accountId(), user.dateOfBirth(), user.email(),
-                user.availableAmount(), user.userTier(), totalUser, totalTransactions);
+        Map<String, Long> transactionsToday = getTotalTransactionsToday();
+        long totalTransactions = transactionsToday.values().stream().mapToLong(Long::longValue).sum();
+
+        long depositPerDay = transactionsToday.getOrDefault("Deposit", 0L);
+        long instantTransferPerDay = transactionsToday.getOrDefault("Instant Transfer", 0L);
+        long overseaTransferPerDay = transactionsToday.getOrDefault("Oversea Transfer", 0L);
+
+        Map<String, Long> userTiersCount = getUserTiersCount();
+        long silverCount = userTiersCount.getOrDefault("Silver Snitch", 0L);
+        long goldCount = userTiersCount.getOrDefault("Golden Galleon", 0L);
+        long platinumCount = userTiersCount.getOrDefault("Platinum Patronus", 0L);
+
+        return new AdminDashboardDto(
+                user.name(),
+                user.age(),
+                user.accountId(),
+                user.dateOfBirth(),
+                user.email(),
+                user.availableAmount(),
+                user.userTier(),
+                totalUser,
+                totalTransactions,
+                depositPerDay,
+                instantTransferPerDay,
+                overseaTransferPerDay,
+                silverCount,
+                goldCount,
+                platinumCount);
+    }
+
+    public Map<String, Long> getUserTiersCount() {
+        MongoCollection<Document> collection = mongoClient.getDatabase("bank-api-db").getCollection("userInfo");
+
+        // Correcting the field name to "userTier" for the aggregation
+        List<Bson> aggregationStages = Arrays.asList(
+                Aggregates.group("$userTier", Accumulators.sum("count", 1)) // Grouping documents by 'userTier' field
+        );
+
+        // Execute the aggregation
+        AggregateIterable<Document> result = collection.aggregate(aggregationStages);
+
+        Map<String, Long> tiersCount = new HashMap<>();
+        for (Document doc : result) {
+            String tierName = doc.getString("_id"); // _id holds the tier name as it's the grouping key
+            Number count = doc.get("count", Number.class); // 'count' is the number of users in this tier
+            tiersCount.put(tierName, count.longValue());
+        }
+
+        return tiersCount;
     }
 
     public long getUserTotal() {
         return userRepository.count();
     }
 
-    public long getTotalTransactionsToday() {
+    public Map<String, Long> getTotalTransactionsToday() {
         LocalDate today = LocalDate.now(ZoneOffset.UTC);
         LocalDateTime startOfDay = today.atStartOfDay(ZoneOffset.UTC).toLocalDateTime();
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX).atZone(ZoneOffset.UTC).toLocalDateTime();
@@ -132,30 +184,42 @@ public class UserService {
         // Unwind transactions array
         UnwindOperation unwindOperation = Aggregation.unwind("transactions");
 
-        // Match the transaction date again after unwinding (in case nested arrays
-        // exist)
+        // Match the transaction date again after unwinding
         MatchOperation matchTransactionDate = Aggregation.match(
                 Criteria.where("transactions.dateTime").gte(startDate).lt(endDate));
 
-        // Group by transactionId to count unique transactions
-        GroupOperation groupOperation = Aggregation.group("transactions.transactionId");
+        // Group by transactionId to ensure each transaction is counted once
+        GroupOperation groupByTransactionId = group("transactions.transactionId")
+                .first("transactions.type").as("type");
 
-        // Count the unique transaction IDs
-        CountOperation countOperation = Aggregation.count().as("totalTransactions");
+        // Group by type and count
+        GroupOperation groupByType = group("type").count().as("total");
+
+        // Project the results to a more readable format
+        ProjectionOperation projectionOperation = Aggregation.project("total")
+                .and("_id").as("transactionType");
 
         // Build aggregation
         Aggregation aggregation = Aggregation.newAggregation(
                 matchOperation,
                 unwindOperation,
                 matchTransactionDate,
-                groupOperation,
-                countOperation);
+                groupByTransactionId,
+                groupByType,
+                projectionOperation);
 
         // Execute aggregation
         AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "userInfo", Document.class);
 
-        Document result = results.getUniqueMappedResult();
-        return result != null ? result.getInteger("totalTransactions") : 0;
+        // Process the results into a map
+        Map<String, Long> transactionCounts = new HashMap<>();
+        for (Document document : results.getMappedResults()) {
+            String transactionType = document.getString("transactionType");
+            Number count = document.get("total", Number.class);
+            transactionCounts.put(transactionType, count.longValue());
+        }
+
+        return transactionCounts;
     }
 
 }

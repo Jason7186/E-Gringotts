@@ -19,4 +19,10 @@ public class AdminDashboardDto {
     private String userTier;
     private long userTotalNum;
     private long transactionsTotalPerDay;
+    private long depositPerDay;
+    private long instantTransferPerDay;
+    private long overseaTransferPerDay;
+    private long silverCount;
+    private long goldCount;
+    private long platinumCount;
 }
