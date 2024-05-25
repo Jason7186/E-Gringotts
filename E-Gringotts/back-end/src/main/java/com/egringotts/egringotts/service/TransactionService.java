@@ -58,6 +58,8 @@ public class TransactionService {
 
         if (securityPin.compareTo(sender.securityPin()) != 0) throw new RuntimeException("Incompatible securityPin");
 
+        if (amount > sender.maxLimitPerTransfer()) throw new IllegalArgumentException("Please set limit per transaction to a higher amount");
+
         Optional<User> receiverOpt = userRepository.findByAccountId(accountId);
         if (receiverOpt.isEmpty()) {
             throw new RuntimeException("Receiver account not found");
@@ -70,11 +72,17 @@ public class TransactionService {
             throw new RuntimeException("Insufficient fund");
         }
 
+        if (sender.dailyAvailableLimit() < amount) {
+            throw new IllegalArgumentException("Daily transaction limit has exceeded");
+        }
+
         double newSenderAmount = sender.availableAmount() - amount;
         double newReceiverAmount = receiver.availableAmount() + amount;
 
         userService.updateBalance(sender.id(), -amount);
         userService.updateBalance(receiver.id(), amount);
+
+        userService.updateDailyAvailableLimit(sender.id(), amount);
 
         String transactionId = UUID.randomUUID().toString();
         Transaction senderTransaction = new Transaction(transactionId, -1*amount, "Instant Transfer", sender.name(), sender.accountId(), receiver.name(), receiver.accountId(), category, transactionDetails);
@@ -135,6 +143,7 @@ public class TransactionService {
     public void overseaTransfer(OverseaTransferRequest overseaTransferRequest) throws Exception {
         User sender = userController.getLoggedInUser();
         if (sender.securityPin().compareTo(overseaTransferRequest.getSecurityPin()) != 0 ) throw new RuntimeException("Incompatible securityPin");
+        if (sender.maxLimitPerTransfer() < overseaTransferRequest.getAmount()) throw new RuntimeException("Please set limit per transaction to a higher amount");
         Optional<User> receiverOpt = userRepository.findByAccountId(overseaTransferRequest.getReceiverAccountId());
         if (receiverOpt.isEmpty()) throw new RuntimeException("Invalid target accountId");
 
@@ -146,8 +155,12 @@ public class TransactionService {
 
         if (sender.availableAmount() < convertedAmount) throw new RuntimeException("Insufficient balance");
 
+        if (sender.dailyAvailableLimit() < convertedAmount) throw new IllegalArgumentException("Daily transaction limit has been exceeded");
+
         userService.updateBalance(sender.id(), -1*convertedAmount);
         userService.updateBalance(receiver.id(), convertedAmount);
+
+        userService.updateDailyAvailableLimit(sender.id(), convertedAmount);
 
         String transactionId = UUID.randomUUID().toString();
         Transaction senderTransaction = new Transaction(transactionId, -1*convertedAmount, "Oversea Transfer", sender.name(), sender.accountId(), receiver.name(), receiver.accountId(), overseaTransferRequest.getCategory(), overseaTransferRequest.getTransactionDetails());

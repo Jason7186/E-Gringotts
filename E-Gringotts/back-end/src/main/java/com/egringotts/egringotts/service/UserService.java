@@ -36,7 +36,6 @@ public class UserService {
 
     public User registerUser(UserDto userDto) {
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
-
         LocalDate birthDate = LocalDate.parse(userDto.getDateOfBirth());
 
         User user = new User(
@@ -47,7 +46,10 @@ public class UserService {
                 birthDate,
                 userDto.getEmail(),
                 encodedPassword,
-                0, // Initial available amount
+                0.0, // Initial available amount
+                10000.0, // Daily limit
+                10000.0, // Daily available limit
+                3000.0, // Max limit per transfer
                 "Silver Snitch", // Default user tier
                 userDto.getSecurityPin(),
                 new DebitCardDetails(),
@@ -55,10 +57,12 @@ public class UserService {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 Collections.singletonList(new Role("USER"))
-
         );
+
+        System.out.println("User created: " + user);
         return userRepository.save(user);
     }
+
 
     private String generateAccountId() {
         MongoDatabase database = mongoClient.getDatabase("bank-api-db");
@@ -74,6 +78,7 @@ public class UserService {
         int newAccId = Integer.parseInt(lastAccountId) + 1;
         return String.format("%08d", newAccId);
     }
+
 
     private int calculateAge(LocalDate dateOfBirth) {
         return (LocalDate.now().getYear() - dateOfBirth.getYear());
@@ -98,6 +103,39 @@ public class UserService {
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
+    public void updateDailyAvailableLimit(String userId, double galleonAmount) throws Exception {
+        Query query = new Query(Criteria.where("id").is(userId));
+        User user = mongoTemplate.findOne(query, User.class);
+
+        if (user == null) {
+            throw new Exception("User not found");
+        }
+
+        Double currentDailyAvailableLimit = user.dailyAvailableLimit();
+        if (currentDailyAvailableLimit == null) {
+            throw new IllegalStateException("dailyAvailableLimit is not set for user: " + userId);
+        }
+
+        double newDailyAvailableLimit = currentDailyAvailableLimit - galleonAmount;
+        if (newDailyAvailableLimit < 0) {
+            throw new IllegalArgumentException("Insufficient Limit");
+        }
+
+        Update update = new Update().set("dailyAvailableLimit", newDailyAvailableLimit);
+        mongoTemplate.updateFirst(query, update, User.class);
+    }
+    public void updateDailyLimit(User user, double newDailyLimit) throws Exception {
+        Query query = new Query(Criteria.where("id").is(user.id()));
+        Update update = new Update().set("dailyLimit", newDailyLimit).set("dailyAvailableLimit", newDailyLimit);
+        mongoTemplate.updateFirst(query, update, User.class);
+    }
+
+    public void updateMaxLimit(User currentLoggedUser, double newMaxTransferLimit) {
+        Query query = new Query(Criteria.where("id").is(currentLoggedUser.id()));
+        Update update = new Update().set("maxLimitPerTransfer", newMaxTransferLimit);
+        mongoTemplate.updateFirst(query, update, User.class);
+    }
+
     public UserDashboardDto getUserDashboard(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         return new UserDashboardDto(
@@ -107,7 +145,10 @@ public class UserService {
                 user.dateOfBirth(),
                 user.email(),
                 user.availableAmount(),
-                user.userTier());
+                user.userTier(),
+                user.dailyLimit(),
+                user.maxLimitPerTransfer()
+        );
     }
 
     public AdminDashboardDto getAdminDashBoard(String id) {
@@ -121,7 +162,7 @@ public class UserService {
         long overseaTransferPerDay = transactionsToday.getOrDefault("Oversea Transfer", 0L);
 
         Map<String, Long> userTiersCount = getUserTiersCount();
-        long silverCount = userTiersCount.getOrDefault("Silver Snitch", 0L);
+        long silverCount = userTiersCount.getOrDefault("Silver Snitch" , 0L);
         long goldCount = userTiersCount.getOrDefault("Golden Galleon", 0L);
         long platinumCount = userTiersCount.getOrDefault("Platinum Patronus", 0L);
 
@@ -133,6 +174,8 @@ public class UserService {
                 user.email(),
                 user.availableAmount(),
                 user.userTier(),
+                user.dailyLimit(),
+                user.maxLimitPerTransfer(),
                 totalUser,
                 totalTransactions,
                 depositPerDay,
@@ -140,15 +183,16 @@ public class UserService {
                 overseaTransferPerDay,
                 silverCount,
                 goldCount,
-                platinumCount);
+                platinumCount
+        );
     }
 
     public Map<String, Long> getUserTiersCount() {
         MongoCollection<Document> collection = mongoClient.getDatabase("bank-api-db").getCollection("userInfo");
 
         // Correcting the field name to "userTier" for the aggregation
-        List<Bson> aggregationStages = Arrays.asList(
-                Aggregates.group("$userTier", Accumulators.sum("count", 1)) // Grouping documents by 'userTier' field
+        List<Bson> aggregationStages = List.of(
+                Aggregates.group("$userTier", Accumulators.sum("count", 1))  // Grouping documents by 'userTier' field
         );
 
         // Execute the aggregation
@@ -163,6 +207,7 @@ public class UserService {
 
         return tiersCount;
     }
+
 
     public long getUserTotal() {
         return userRepository.count();
@@ -179,14 +224,16 @@ public class UserService {
 
         // Match transactions within the date range
         MatchOperation matchOperation = Aggregation.match(
-                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate));
+                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate)
+        );
 
         // Unwind transactions array
         UnwindOperation unwindOperation = Aggregation.unwind("transactions");
 
         // Match the transaction date again after unwinding
         MatchOperation matchTransactionDate = Aggregation.match(
-                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate));
+                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate)
+        );
 
         // Group by transactionId to ensure each transaction is counted once
         GroupOperation groupByTransactionId = group("transactions.transactionId")
@@ -206,7 +253,8 @@ public class UserService {
                 matchTransactionDate,
                 groupByTransactionId,
                 groupByType,
-                projectionOperation);
+                projectionOperation
+        );
 
         // Execute aggregation
         AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "userInfo", Document.class);
@@ -221,5 +269,4 @@ public class UserService {
 
         return transactionCounts;
     }
-
 }

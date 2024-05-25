@@ -17,6 +17,8 @@ public class AdminDashboardDto {
     private String email;
     private double availableAmount;
     private String userTier;
+    private double limitPerDay;
+    private double limitPerTransactions;
     private long userTotalNum;
     private long transactionsTotalPerDay;
     private long depositPerDay;

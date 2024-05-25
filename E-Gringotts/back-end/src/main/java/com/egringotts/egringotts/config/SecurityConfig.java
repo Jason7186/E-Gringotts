@@ -60,7 +60,6 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/register", "/error", "/login-transaction/**")
                         .permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // Only admins can access paths under
-                                                                           // /api/admin/
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

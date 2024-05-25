@@ -43,7 +43,7 @@ public class InterestService {
             String newTier = getUserTier(newAvailableAmount);
 
             Query query = new Query(Criteria.where("id").is(user.id()));
-            Update update = new Update().set("availableAmount" ,newAvailableAmount).set("userTier", newTier);
+            Update update = new Update().set("availableAmount" ,newAvailableAmount).set("userTier", newTier).set("dailyAvailableLimit", user.dailyLimit());
             mongoTemplate.updateFirst(query, update, User.class);
         }
     }

@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +19,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
@@ -73,6 +76,30 @@ public class UserController {
             User currentLoggedUser = getLoggedInUser();
             UserDashboardDto userDashboardDto = userService.getUserDashboard(currentLoggedUser.email());
             return ResponseEntity.ok(userDashboardDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/user/dailyLimit")
+    public ResponseEntity<?> updateDailyLimit (@RequestBody DailyLimitUpdateRequest dailyLimitUpdateRequest) {
+        try {
+            User currentLoggedUser = getLoggedInUser();
+            if (Objects.equals(currentLoggedUser.dailyLimit(), dailyLimitUpdateRequest.getNewDailyLimit())) throw new RuntimeException("Same limit does not require update");
+            userService.updateDailyLimit(currentLoggedUser, dailyLimitUpdateRequest.getNewDailyLimit());
+            return ResponseEntity.ok("Daily Limit updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("user/maxTransferLimit")
+    public ResponseEntity<?> updateMaxTransferLimit(@RequestBody MaxTransferLimitUpdateRequest maxTransferLimitUpdateRequest) {
+        try {
+            User currentLoggedUser = getLoggedInUser();
+            if (Objects.equals(currentLoggedUser.maxLimitPerTransfer(), maxTransferLimitUpdateRequest.getNewMaxTransferLimit())) throw new RuntimeException("Same limit does not require update");
+            userService.updateMaxLimit(currentLoggedUser, maxTransferLimitUpdateRequest.getNewMaxTransferLimit());
+            return ResponseEntity.ok("Max Transfer Limit Updated Successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
