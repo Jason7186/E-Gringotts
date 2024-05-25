@@ -16,17 +16,17 @@ const PieChart: React.FC<PieChartProps> = ({ data, labels }) => {
       {
         data: data,
         backgroundColor: [
-          '#FF6384',
-          '#36A2EB',
-          '#FFCE56',
+          '#510575',
+          '#b504be',
+          '#f092d9',
           '#4BC0C0',
           '#9966FF',
           '#FF9F40',
         ],
         hoverBackgroundColor: [
-          '#FF6384',
-          '#36A2EB',
-          '#FFCE56',
+          '#510575',
+          '#b504be',
+          '#f092d9',
           '#4BC0C0',
           '#9966FF',
           '#FF9F40',
