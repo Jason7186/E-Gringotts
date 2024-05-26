@@ -17,7 +17,7 @@ public class ExpensesController {
         this.expensesService = expensesService;
     }
 
-    @PostMapping("/expenses")
+    @GetMapping("/expenses")
     public ResponseEntity<?> getExpenses(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {

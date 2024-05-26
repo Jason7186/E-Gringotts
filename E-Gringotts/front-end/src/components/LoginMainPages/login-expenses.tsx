@@ -125,24 +125,23 @@ const LoginExpenses: React.FC = () => {
   const sendDate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    const url = "http://localhost:8080/login/expenses";
+    const url = new URL("http://localhost:8080/login/expenses");
     const date = {
       startDate: startDate,
       endDate: endDate
     };
+    Object.keys(date).forEach(key => url.searchParams.append(key, date[key]));
     setIsLoading(true);
 
     try {
       console.log('Sending request to:', url);
-      console.log('Request body:', JSON.stringify(date));
 
       const response = await fetch(url, {
-          method: 'POST',
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(date)
         }
       );
 
