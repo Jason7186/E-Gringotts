@@ -7,7 +7,7 @@ import Navbar from "./Navbar";
 import { Route, Routes } from "react-router-dom";
 import LoginSignup from "./components/LoginSignup/LoginSignup";
 import LoginMain from "./components/LoginMainPages/login-main";
-import LoginCurrencyConversion from "./components/LoginMainPages/login-currency-conversion";
+import LoginCurrenyConversion from "./components/LoginMainPages/login-currency-conversion";
 import LoginExpenses from "./components/LoginMainPages/login-expenses";
 import LoginTransaction from "./components/LoginMainPages/login-transaction";
 import Loginhelp from "./components/LoginMainPages/login-help";
@@ -19,6 +19,9 @@ import OverseasTransaction from "./components/LoginMainPages/transaction-pages/o
 import InstantTransaction from "./components/LoginMainPages/transaction-pages/instant-transaction";
 import Deposit from "./components/LoginMainPages/transaction-pages/deposit";
 import TransactionHistory from "./components/LoginMainPages/transaction-pages/transaction-history";
+import CardDetails from "./components/LoginMainPages/profile-dropdown/card-info";
+import AdminDashboard from "./components/LoginMainPages/profile-dropdown/admin-dashboard";
+import UserDashboard from "./components/LoginMainPages/profile-dropdown/user-dashboard";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -54,7 +57,7 @@ function App() {
           ></Route>
           <Route
             path="/login-currency-conversion"
-            element={<LoginCurrencyConversion />}
+            element={<LoginCurrenyConversion />}
           ></Route>
           <Route path="/login-help" element={<Loginhelp />}></Route>
           <Route
@@ -77,10 +80,23 @@ function App() {
             path="/login-transaction/transaction-history"
             element={<TransactionHistory />}
           ></Route>
+          <Route
+            path="/instant-transaction/:id"
+            element={<InstantTransaction />}
+          />
+          <Route path="/login/card-details" element={<CardDetails />}></Route>
+          <Route
+            path="/login/admin-dashboard"
+            element={<AdminDashboard />}
+          ></Route>
+          <Route
+            path="/login/user-dashboard"
+            element={<UserDashboard />}
+          ></Route>
         </Routes>
       </div>
     </>
   );
 }
 
-export default App; //export so it can be used somewhere else
+export default App;

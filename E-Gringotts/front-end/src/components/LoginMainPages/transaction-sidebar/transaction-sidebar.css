@@ -7,6 +7,7 @@
     background-color: rgba(24, 0, 53, 0.863);
     padding: 20px;
     transition: left 0.3s ease; /* Animate the left property */
+    z-index: 10;
   }
   
   .button-container {
@@ -49,6 +50,7 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     user-select: none;
     transition: background-color 0.3s, left 0.3s ease;
+    z-index: 10;
   }
   
   .toggle-button:hover {
@@ -81,6 +83,13 @@
     width: 650px;
     position: absolute;
     text-align: center;
+    z-index: 1;
+  }
+
+  .button a:link,
+  .button a:visited{
+    color: inherit;
+    text-decoration: none;
   }
 
 

@@ -1,0 +1,64 @@
+.modal-overlay {
+  position: fixed; /* Use fixed to keep it in place even on scroll */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  z-index: 1000; /* Make sure it's above all other content */
+}
+
+.modal-contents {
+  background: white; /* Background color of the modal */
+  padding: 20px;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for 3D effect */
+  width: 500px; /* Fixed width, but you can make it responsive if needed */
+  max-width: 90%; /* Ensure it doesn't get too wide on small screens */
+  z-index: 1001; /* Ensure modal content is above the overlay */
+  text-align: center; /* Center the text inside the modal */
+}
+
+.modal-contents h2 {
+  margin-top: 0;
+  color: #333; /* Dark grey color for the title */
+}
+
+.modal-contents p {
+  font-size: 16px; /* Reasonable text size */
+  color: #555; /* Dark grey color for the text */
+}
+
+.modal-contents .pin-input {
+  margin: 20px 0; /* Add margin to create space around the input field */
+  padding: 10px;
+  width: calc(100% - 20px); /* Adjust width to account for padding */
+  border: 1px solid #ccc; /* Light border */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 10px; /* Add space between buttons */
+}
+
+.modal-contents button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px; /* Rounded corners for buttons */
+  cursor: pointer;
+  background-color: #007BFF; /* Blue background for the confirm button */
+  color: white;
+  font-weight: bold;
+}
+
+.modal-contents button:last-child {
+  background-color: #ccc; /* Light grey background for the cancel button */
+  color: black;
+}

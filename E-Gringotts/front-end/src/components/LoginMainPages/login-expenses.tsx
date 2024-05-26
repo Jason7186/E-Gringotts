@@ -122,42 +122,46 @@ const LoginExpenses: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendDate = async () => {
-    const token = localStorage.getItem("token");
+  const sendDate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
     const url = "http://localhost:8080/login/expenses";
     const date = {
-      startDate,
-      endDate
+      startDate: startDate,
+      endDate: endDate
     };
     setIsLoading(true);
 
     try {
+      console.log('Sending request to:', url);
+      console.log('Request body:', JSON.stringify(date));
+
       const response = await fetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(date)
         }
       );
 
       if (!response.ok) {
-        throw new Error('i dont know what im doing');
+        throw new Error('Server responded with an error');
       }
 
       const responseData = await response.json();
-      console.log('i think i got the file');
+      console.log('Response data:', responseData);
       
       const categoryTotals = processData(responseData);
-      const chartData: ChartData = {
+      const chartData = {
         labels: Object.keys(categoryTotals),
         values: Object.values(categoryTotals),
       };
       setData(chartData);
 
     } catch (error) {
-      console.error('what is this again');
+      console.error('Error occurred:', error);
     } finally {
       setIsLoading(false);
     }

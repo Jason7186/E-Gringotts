@@ -4,6 +4,8 @@ import user_icon from "./person.png";
 import "./LoginSignup.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoginModal from "./login-modal";
+import "./login-modal.css";
 
 interface LoginSignupProps {
   setIsLoggedIn: React.Dispatch<boolean>;
@@ -14,7 +16,6 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
   const [dob, setDob] = useState("");
   const [pin, setPin] = useState("");
   const navigate = useNavigate();
@@ -37,7 +38,6 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
     if (
       email.trim() === "" ||
       password.trim() === "" ||
-      age.trim() === "" ||
       dob.trim() === "" ||
       pin.trim() === "" ||
       name.trim() === ""
@@ -49,6 +49,11 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
     setIsLoggedIn(true);
     sessionStorage.setItem("isLoggedIn", "true");
     navigate("/login-main");
+    <div className="modal-overlay">
+      <div className="modal-contents">
+        <h1>Logged In Successfully!</h1>
+      </div>
+    </div>;
   };
 
   const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,15 +119,7 @@ const LoginSignup = ({ setIsLoggedIn }: LoginSignupProps) => {
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <div className="input">
-                <img src={user_icon} alt="" />
-                <input
-                  type="number"
-                  placeholder="Age"
-                  value={age}
-                  onChange={(e) => setAge(e.target.value)}
-                />
-              </div>
+
               <div className="input">
                 <img src={user_icon} alt="" />
                 <input

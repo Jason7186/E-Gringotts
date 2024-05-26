@@ -10,8 +10,11 @@
     padding: 0;
     background-repeat: no-repeat;
     height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 0;
-  }
+}
   
   .bar {
     position: absolute;
@@ -120,5 +123,17 @@
     height: 100vh;
     z-index: 0;
   }
+
+  .currency-conversion-image {
+    background-image: url('currency-conversion-image.png'); 
+    margin-top: 60px;
+    width: 80%;
+    height: 70%;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
   
   

@@ -4,6 +4,9 @@ import user_icon from "./person.png";
 import "./LoginSignup.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CardDetails from "../LoginMainPages/card-info";
+import RegisterModal from "./register-modal";
+import LoginModal from "./login-modal";
 
 interface RegisterProps {
   setIsLoggedIn: React.Dispatch<boolean>;
@@ -13,28 +16,74 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
   const [dob, setDob] = useState("");
   const [pin, setPin] = useState("");
+  const [creating, setCreating] = useState(false); //creating account modal
+  const [showModal, setShowModal] = useState(false); //logged in successful modal
   const navigate = useNavigate();
 
-  const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const isValidPassword = (password: string): boolean => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (
-      email.trim() === "" ||
-      password.trim() === "" ||
-      age.trim() === "" ||
-      dob.trim() === "" ||
-      pin.trim() === "" ||
-      name.trim() === ""
-    ) {
+
+    if (!email || !password || !dob || !pin || !name) {
       alert("Please enter all fields.");
       return;
     }
-    console.log("Registering with email:", email, "and password:", password);
-    setIsLoggedIn(true);
-    sessionStorage.setItem("isLoggedIn", "true");
-    navigate("/login-main");
+
+    if (!isValidPassword(password)) {
+      alert(
+        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one special character."
+      );
+      return;
+    }
+
+    const userDetails = {
+      name,
+      dateOfBirth: dob,
+      email,
+      password,
+      securityPin: pin,
+    };
+
+    try {
+      setCreating(true);
+
+      const response = await fetch("http://localhost:8080/register", {
+        // Change this if your backend is running on a different port
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userDetails),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        localStorage.setItem("token", result.token); //save token
+        console.log("Registration successful", result);
+        setIsLoggedIn(true);
+        sessionStorage.setItem("isLoggedIn", "true");
+        setShowModal(true);
+        setTimeout(() => {
+          navigate("/login-main");
+        }, 3000);
+      } else if (response.status === 409) {
+        alert("Email already exists. Please enter another one.");
+      } else {
+        throw new Error(`Failed to register. Status code: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("Registration failed. Please try again.");
+    } finally {
+      setCreating(false);
+    }
   };
 
   const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,15 +109,6 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <img src={user_icon} alt="" />
-              <input
-                type="number"
-                placeholder="Age"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
               />
             </div>
             <div className="input">
@@ -127,6 +167,8 @@ const Register = ({ setIsLoggedIn }: RegisterProps) => {
           </div>
         </div>
       </div>
+      {showModal && <LoginModal />}
+      {creating && <RegisterModal />}
     </div>
   );
 };
