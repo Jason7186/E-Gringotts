@@ -184,4 +184,18 @@ public class CommunicationService {
         javaMailSender.send(message);
     }
 
+    public void sendOTPEmail(String email, String code) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(email);
+            helper.setSubject("Password Reset Code");
+            helper.setText("<h1>Password Reset Code</h1>" +
+                    "<p>Your code for resetting your password is: <strong>" + code + "</strong></p>" +
+                    "<p>This code will expire in 60 seconds.</p>", true);
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send OTP email", e);
+        }
+    }
 }

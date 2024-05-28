@@ -4,7 +4,6 @@ import user_icon from "./person.png";
 import "./LoginSignup.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CardDetails from "../LoginMainPages/card-info";
 import RegisterModal from "./register-modal";
 import LoginModal from "./login-modal";
 

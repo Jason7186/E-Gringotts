@@ -1,5 +1,17 @@
+.currency-conversion-background {
+    background-image: url(../MainPageBackground.png);
+    /* Update with your image path */
+    background-size: cover;
+    /* Cover the entire page */
+    background-position: relative;
+    /* Center the background image */
+    background-repeat: no-repeat;
+    /* Do not repeat the image */
+    height: 100vh;
+    width: 100%;
+}
 
-.background h1{
+.currency-conversion-background h1 {
     position: absolute;
     margin-top: 100px;
     margin-left: 50px;
@@ -7,25 +19,26 @@
     font-weight: bold;
     color: rgb(255, 255, 255);
 }
-.exchange-container{
+
+.currency-conversion-background img {
+    position: absolute;
+    margin-left: 650px;
+    margin-top: 270px;
+    z-index: 3;
+}
+
+.exchange-container {
     display: flex;
     flex-direction: column;
     position: absolute;
-    padding-top: 30px;
-    padding-left: 30px;
-    padding-right: 850px;
-    padding-bottom: 350px;
+    padding-top: 130px;
+    padding-left: 50px;
     margin-top: 175px;
     margin-left: 80px;
-    background-color: rgb(138, 43, 226);
+    background-color: rgba(71, 8, 90, 0.938);
     border-radius: 15px;
-    opacity: 0.9;
-}
-
-.exchange-container img{
-    position: absolute;
-    margin-left: 600px;
-    margin-top: 50px;
+    width: 90%;
+    height: 65%;
 }
 
 .choose-currency select {
@@ -44,7 +57,7 @@
     color: white;
 }
 
-.output{
+.output {
     display: flex;
 }
 
@@ -58,7 +71,7 @@
     font-size: 1.5rem;
 }
 
-.output h3{
+.output h3 {
     border: none;
     border-radius: 3px;
     margin-top: 10px;
@@ -68,4 +81,5 @@
     width: 220px;
     padding: 20px;
     font-size: 1.5rem;
+    overflow: auto;
 }

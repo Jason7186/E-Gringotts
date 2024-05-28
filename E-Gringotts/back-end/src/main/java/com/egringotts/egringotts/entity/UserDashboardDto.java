@@ -17,4 +17,6 @@ public class UserDashboardDto {
     private String email;
     private double availableAmount;
     private String userTier;
+    private double limitPerDay;
+    private double limitPerTransactions;
 }

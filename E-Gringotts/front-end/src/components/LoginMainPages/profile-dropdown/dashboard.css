@@ -8,6 +8,7 @@
     height: 100vh;
     display: flex;
     z-index: 0;
+    background-color: #f092d9;
 }
 
 .dashboard-container {
@@ -21,20 +22,19 @@
     width: 500px;
     text-align: center;
 }
-  
+
 .dashboard-container h1 {
     margin-bottom: 20px;
     color: #333;
 }
-  
+
 .dashboard-container p {
     margin: 10px 0;
     font-size: 16px;
     color: #666;
 }
-  
+
 .dashboard-container p span {
     font-weight: bold;
     color: #000;
 }
-  

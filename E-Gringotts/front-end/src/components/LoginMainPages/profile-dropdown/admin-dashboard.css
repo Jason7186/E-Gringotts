@@ -1,0 +1,61 @@
+.admin-dashboard-background {
+    position: relative;
+    background: linear-gradient(to bottom, #4b0082, #dda0dd);
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    z-index: 0;
+}
+
+.admin-dashboard-container {
+    position: absolute;
+    margin-top: 110px;
+    margin-left: 25px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    width: 450px;
+    text-align: center;
+    height: 450px;
+}
+
+.admin-dashboard-container h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.admin-dashboard-container p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #666;
+}
+
+.admin-dashboard-container p span {
+    font-weight: bold;
+    color: #000;
+}
+
+.chart-container {
+    display: flex;
+    justify-content: space-evenly;
+    position: absolute;
+    margin-top: 110px;
+    margin-left: 505px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    width: 750px;
+    height: 450px;
+    text-align: center;
+}
+
+
+.user-tier-chart-container {
+    flex: 1;
+    height: auto;
+}

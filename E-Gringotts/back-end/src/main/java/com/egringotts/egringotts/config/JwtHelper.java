@@ -14,7 +14,7 @@ import java.util.Date;
 public class JwtHelper {
 
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private static final int EXPIRATION_TIME = 60; // Expiration time in minutes
+    private static final int EXPIRATION_TIME = 30; // Expiration time in minutes
 
     public static String generateToken(String email) {
         Instant now = Instant.now();

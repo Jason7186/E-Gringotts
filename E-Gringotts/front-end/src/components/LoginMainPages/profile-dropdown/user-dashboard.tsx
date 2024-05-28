@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./dashboard.css";
 import "../transaction-pages/Modal.css";
+import edit from "./edit.png";
+import EditTransactionLimit from "./edit-transaction-limit";
+import EditDailyLimit from "./edit-daily-limit";
 
 const UserDashboard = () => {
   const [name, setName] = useState("");
@@ -10,7 +13,11 @@ const UserDashboard = () => {
   const [email, setEmail] = useState("");
   const [availableAmount, setAvailableAmount] = useState("");
   const [tier, setTier] = useState("");
+  const [dailyLimit, setDailyLimit] = useState<number>(0);
+  const [transferLimit, setTransferLimit] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [editTransaction, setEditTransaction] = useState(false) //edit transaction limit
+  const [editDaily, setEditDaily] = useState(false) //edit dailiy limit
 
   useEffect(() => {
     getUserDetails();
@@ -38,6 +45,8 @@ const UserDashboard = () => {
         setEmail(data.email);
         setAvailableAmount(data.availableAmount);
         setTier(data.userTier);
+        setDailyLimit(data.limitPerDay)
+        setTransferLimit(data.limitPerTransactions)
       } else {
         alert("Error in fetching details. Please try again later");
         throw new Error("Network response was not ok");
@@ -47,6 +56,22 @@ const UserDashboard = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const editTransactionLimit = () => {
+    setEditTransaction(true)
+  }
+
+  const editDailyLimit = () => {
+    setEditDaily(true);
+  }
+
+  const closeEditTransactionLimit = () => {
+    setEditTransaction(false);
+  };
+
+  const closeEditDailyLimit = () => {
+    setEditDaily(false);
   };
 
   return (
@@ -76,6 +101,24 @@ const UserDashboard = () => {
             <p>
               Tier: <span>{tier}</span>
             </p>
+            <p>
+              Transaction Limit: <span>{transferLimit}</span>
+              <img
+                  className="edit"
+                  src={edit}
+                  alt="edit"
+                  onClick={editTransactionLimit}
+                ></img>
+            </p>
+            <p>
+              Daily Transaction Limit: <span>{dailyLimit}</span>
+              <img
+                  className="edit"
+                  src={edit}
+                  alt="edit"
+                  onClick={editDailyLimit}
+                ></img>
+            </p>
           </div>
         </div>
       </div>
@@ -86,6 +129,20 @@ const UserDashboard = () => {
             <p>Please give us a moment</p>
           </div>
         </div>
+      )}
+      {editTransaction && (
+        <EditTransactionLimit
+          transactionLimit={transferLimit}
+          setTransactionLimit={setTransferLimit}
+          onClose={closeEditTransactionLimit}
+        />
+      )}
+      {editDaily && (
+        <EditDailyLimit
+          DailyLimit={dailyLimit}
+          setDailyLimit={setDailyLimit}
+          onClose={closeEditDailyLimit}
+        />
       )}
     </>
   );
