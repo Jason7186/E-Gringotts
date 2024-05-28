@@ -269,4 +269,12 @@ public class UserService {
 
         return transactionCounts;
     }
+
+    public void changeUserPassword(User user, String newPassword) {
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        Update update = new Update();
+        update.set("password", encodedPassword);
+        Query query = new Query(Criteria.where("id").is(user.id()));
+        mongoTemplate.updateFirst(query, update, User.class);
+    }
 }

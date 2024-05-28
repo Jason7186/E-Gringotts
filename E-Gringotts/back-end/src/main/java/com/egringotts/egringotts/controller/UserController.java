@@ -3,6 +3,8 @@ package com.egringotts.egringotts.controller;
 import com.egringotts.egringotts.config.JwtHelper;
 import com.egringotts.egringotts.entity.*;
 import com.egringotts.egringotts.repository.UserRepository;
+import com.egringotts.egringotts.service.AuthenticationService;
+import com.egringotts.egringotts.service.OTPService;
 import com.egringotts.egringotts.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -31,6 +34,8 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final MongoTemplate mongoTemplate;
+    private final AuthenticationService authenticationService;
+    private OTPService otpService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
@@ -183,6 +188,36 @@ public class UserController {
             return ResponseEntity.ok(currentRole);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/user/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String secret = authenticationService.generateAndSendOTP(email);
+        return ResponseEntity.ok("OTP sent to your email.");
+    }
+
+    @PostMapping("/user/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> requestData) {
+        String email = requestData.get("email");
+        String otp = requestData.get("otp");
+        String newPassword = requestData.get("newPassword");
+
+        // Validate the OTP again before proceeding
+        if (!otpService.validateOTP(email, otp)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP.");
+        }
+
+        // Update the user's password
+        try {
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+            userService.changeUserPassword(user, newPassword);
+            // Optionally, delete the OTP from the database if it's not automatically handled by TTL
+            otpService.deleteOTP(email);
+            return ResponseEntity.ok("Password has been successfully reset.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
 
