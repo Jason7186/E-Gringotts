@@ -1,0 +1,144 @@
+.help-background {
+    background-image: url(../help-background.jpg); /* Update with your image path */
+    background-size: cover; /* Cover the entire page */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    width: '100vw';
+    height: '100vh';
+}
+
+.help-background h1 {
+    position: absolute;
+    margin-top: 85px;
+    margin-left: 50px;
+    font-size: 3rem;
+    font-weight: bold;
+    color: rgba(71, 8, 90, 0.938);
+}
+
+.help-container {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    padding-top: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 10px;
+    margin-top: 160px;
+    margin-left: 20%;
+    background-color: rgba(71, 8, 90, 0.938);
+    border-radius: 15px;
+    width: 60%;
+    height: 77%;
+}
+
+.chat-window {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+  
+.message-list {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+  
+.message {
+    background: #e0e0e0;
+    border-radius: 1.2rem;
+    padding: 10px 20px;
+    margin-bottom: 8px;
+    max-width: 60%;
+    font-size: 16px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    display: inline-block;
+}
+
+.message.sent {
+    background: #007bff;
+    color: white;
+    margin-left: auto;
+    align-self: flex-end;
+}
+
+.message.received {
+    background: #e0e0e0;
+    margin-right: auto;
+    align-self: flex-start;
+}
+  
+.message-input {
+    display: flex;
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+  
+.message-input textarea {
+    flex: 1;
+    padding: 7px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    max-height: 150px;
+    min-height: 40px; 
+    line-height: 1.5;
+}
+
+.message-input textarea::-webkit-scrollbar {
+    width: 7px;
+}
+
+.message-input textarea::-webkit-scrollbar-track {
+    background-color: hsla(0, 0%, 71%, 0.255);
+}
+
+.message-input textarea::-webkit-scrollbar-thumb {
+    background: rgba(71, 8, 90, 0.815);
+    border-radius: 3px;
+}
+
+.message-input textarea::-webkit-scrollbar-thumb:hover {
+    background: rgba(71, 8, 90, 0.655);
+}
+  
+.message-input button {
+    margin-left: 8px;
+    padding: 8px 16px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+.message-input button:hover {
+    background-color: #0056b3;
+}
+
+.help-background ::-webkit-scrollbar {
+    width: 7px;
+}
+
+.help-background ::-webkit-scrollbar-track {
+    background-color: rgba(71, 8, 90, 0.938);
+}
+
+.help-background ::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 3px;
+}
+
+.help-background ::-webkit-scrollbar-thumb:hover {
+    background: rgba(178, 178, 178, 0.979);
+}
