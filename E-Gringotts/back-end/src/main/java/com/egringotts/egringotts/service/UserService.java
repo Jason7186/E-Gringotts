@@ -1,6 +1,7 @@
 package com.egringotts.egringotts.service;
 
 import com.egringotts.egringotts.entity.*;
+import com.egringotts.egringotts.repository.ChatHistoryRepository;
 import com.egringotts.egringotts.repository.UserRepository;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
@@ -33,16 +34,18 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final MongoClient mongoClient;
     private final MongoTemplate mongoTemplate;
+    private final ChatHistoryRepository chatHistoryRepository;
 
     public User registerUser(UserDto userDto) {
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         LocalDate birthDate = LocalDate.parse(userDto.getDateOfBirth());
+        String generatedAccountId = generateAccountId();
 
         User user = new User(
                 null, // MongoDB generates the ID
                 userDto.getName(),
                 calculateAge(birthDate),
-                generateAccountId(),
+                generatedAccountId,
                 birthDate,
                 userDto.getEmail(),
                 encodedPassword,
@@ -59,7 +62,10 @@ public class UserService {
                 Collections.singletonList(new Role("USER"))
         );
 
+        ChatHistory chatHistory = new ChatHistory(generatedAccountId, new ArrayList<>());
+
         System.out.println("User created: " + user);
+        chatHistoryRepository.save(chatHistory);
         return userRepository.save(user);
     }
 
