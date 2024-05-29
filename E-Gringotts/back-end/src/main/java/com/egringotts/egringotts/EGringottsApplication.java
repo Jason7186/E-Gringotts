@@ -8,5 +8,4 @@ public class EGringottsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EGringottsApplication.class, args);
 	}
-
 }
