@@ -67,12 +67,16 @@ public class ExpensesService {
         AggregationOperation replaceRootWithTransaction = context -> new Document("$replaceRoot", new Document("newRoot", "$transactions"));
         replaceRoot(obj,replaceRootWithTransaction);
 
-        // Check need to filter date range or not
-        if (startDateStr != null && endDateStr != null) {
-            Date startDate = Date.from(LocalDate.parse(startDateStr).atStartOfDay(ZoneId.systemDefault()).toInstant());
-            Date endDate = Date.from(LocalDate.parse(endDateStr).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
-            MatchOperation matchDateRange = Aggregation.match(Criteria.where("dateTime").gte(startDate).lte(endDate));
-            addObject(obj,matchDateRange);
+        // Apply date range filter only if both dates are provided
+        if (startDateStr != null && !startDateStr.isEmpty() && endDateStr != null && !endDateStr.isEmpty()) {
+            try {
+                Date startDate = Date.from(LocalDate.parse(startDateStr).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                Date endDate = Date.from(LocalDate.parse(endDateStr).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                MatchOperation matchDateRange = Aggregation.match(Criteria.where("dateTime").gte(startDate).lte(endDate));
+                addObject(obj, matchDateRange);
+            } catch (Exception e) {
+                throw new RuntimeException("Invalid date format");
+            }
         }
 
         // Sort the category to their own list

@@ -119,6 +119,7 @@
 
 .message-input textarea::-webkit-scrollbar-track {
     background-color: hsla(0, 0%, 71%, 0.255);
+    border-radius: 3px;
 }
 
 .message-input textarea::-webkit-scrollbar-thumb {
@@ -206,6 +207,7 @@
 
 .help-background ::-webkit-scrollbar-track {
     background-color: rgba(71, 8, 90, 0.938);
+    border-radius: 3px;
 }
 
 .help-background ::-webkit-scrollbar-thumb {

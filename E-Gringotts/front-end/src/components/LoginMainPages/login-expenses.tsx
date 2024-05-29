@@ -113,8 +113,8 @@ function processData(data: TransactionsData): Record<string, number> {
 
 
 const LoginExpenses: React.FC = () => {
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [data, setData] = useState({
     labels: [], // Example labels
     values: [] // Example data
