@@ -8,22 +8,55 @@ interface Message {
 }
 interface ChatWindowProps {
   messages: Message[];
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, isSent: boolean) => void;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ messages, onSendMessage }) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messageListRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async (e?: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e) e.preventDefault();
     if (message.trim() !== '') {
-      onSendMessage(message);
+      onSendMessage(message, true);
       setMessage('');
       if (textareaRef.current) {
         textareaRef.current.style.height = '40px'; 
         textareaRef.current.rows = 1; 
       }
+    }
+    
+    const token = localStorage.getItem('token');
+    const url = new URL("http://localhost:8080/login/help-chat");
+    const params = { prompt: message };
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    setIsLoading(true);
+
+    try {
+      console.log('Sending request to:', url);
+
+      const response = await fetch(url.toString(), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Server responded with an error');
+      }
+
+      const responseData = await response.text();
+      console.log('Response string:', responseData);
+      onSendMessage(responseData, false);
+    } catch (error) {
+      console.error('Error occurred:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -36,6 +69,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ messages, onSendMessage }) => {
       textarea.style.overflow = 'auto'; 
     } else {
       textarea.style.overflow = 'hidden'; 
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      handleSend(e);
     }
   };
 
@@ -56,33 +95,35 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ messages, onSendMessage }) => {
             {msg.text}
           </div>
         ))}
+        {isLoading && (
+          <div className="messageTyping">
+            <span className="typing-indicator">
+              <span></span><span></span><span></span>
+            </span>
+          </div>
+        )}
       </div>
-      <div className="message-input">
+      <form className="message-input" onSubmit={handleSend}>
         <textarea
           ref={textareaRef}
           value={message}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           placeholder="Type your message..."
           rows={1}
           style={{ height: 'auto' }}
         />
-        <button onClick={handleSend}>Send</button>
-      </div>
+        <button type='submit' disabled={isLoading}>Send</button>
+      </form>
     </div>
   );
 };
 
 const Loginhelp: React.FC = () => {
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
-  const sendMessage = (message: string) => {
-    setMessages([...messages, { text: message, isSent: true }]);
-    setTimeout(() => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: `Received: ${message}`, isSent: false },
-      ]);
-    }, 1000);
+  const sendMessage = (message: string, isSent: boolean) => {
+    setMessages(prevMessages => [...prevMessages, { text: message, isSent }]);
   };
 
   return (

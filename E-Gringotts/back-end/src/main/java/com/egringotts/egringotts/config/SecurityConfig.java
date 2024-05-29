@@ -57,10 +57,8 @@ public class SecurityConfig {
                             return config;
                         }))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/register", "/error", "/login-transaction/**")
-                        .permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Only admins can access paths under
-                                                                           // /api/admin/
+                        .requestMatchers("/login", "/register", "/error", "/login-transaction/**","/login/help-chat").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Only admins can access paths under /api/admin/
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
