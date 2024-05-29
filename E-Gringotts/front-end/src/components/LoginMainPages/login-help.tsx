@@ -27,6 +27,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ messages, onSendMessage }) => {
         textareaRef.current.rows = 1; 
       }
     }
+    else {
+      return;
+    }
     
     const token = localStorage.getItem('token');
     const url = new URL("http://localhost:8080/login/help-chat");

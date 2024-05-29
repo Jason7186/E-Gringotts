@@ -4,7 +4,6 @@ import com.egringotts.egringotts.controller.UserController;
 import com.egringotts.egringotts.entity.*;
 import com.egringotts.egringotts.repository.ChatHistoryRepository;
 import com.egringotts.egringotts.repository.UserRepository;
-import com.mongodb.client.result.UpdateResult;
 import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -51,13 +50,15 @@ public class AIChatService {
         Optional<ChatHistory> request = chatHistoryRepository.findByAccountId(currentUserAccId);
         if (!request.isEmpty()) {
             List<AIQnA> aiQnAList= request.get().getQnA();
-            List<String> role = new ArrayList<>();
-            List<String> content = new ArrayList<>();
-            for (AIQnA i : aiQnAList) {
-                role.add(i.getRole());
-                content.add(i.getContent());
+            List<String> question = new ArrayList<>();
+            List<String> response = new ArrayList<>();
+            for (int i = 0; i < aiQnAList.size(); i++) {
+                if (i % 2 == 0)
+                    question.add(aiQnAList.get(i).getContent());
+                else
+                    response.add(aiQnAList.get(i).getContent());
             }
-            return role + content.toString() + "\nand the below are the user information\n<User Information>\n";
+            return "\nThese are the question asked: " + question + "\nThese are the reponse: " +response+ "\nand the below are the user information\n<User Information>\n";
         }
         else
             return "\nThere are no chat history between you two, below are the user information\n<User Information>\n";
@@ -80,13 +81,13 @@ public class AIChatService {
         for (Transaction transaction : user.transactions())
             userInfo.append("User transaction details: "+transaction.getDateTime().toString() + transaction.getAmount() + transaction.getType() + transaction.getCategory() + "\n");
         for (Friend friend : user.friends())
-            userInfo.append("User's friends: "+friend.getName() + friend.getAccountId() + "\n");
+            userInfo.append("User's friends: " + " friend name: "+ friend.getName() + "friend account id: " + friend.getAccountId() + "\n");
         return userInfo+"And now this is the question from the user\n<Question>\n";
     }
 
     public String getGeneralInformation() {
         StringBuilder general = new StringBuilder();
-        try(BufferedReader read = new BufferedReader(new FileReader("D:\\DOWNLOAD\\E-Gringotts QnA.txt"))) {
+        try(BufferedReader read = new BufferedReader(new FileReader("C:\\Users\\terng\\OneDrive\\um coding\\react test\\E-Gringotts\\back-end\\src\\main\\java\\com\\egringotts\\egringotts\\service\\E-Gringotts QnA.txt"))) {
             String line;
             while ((line = read.readLine()) != null) {
                 general.append(line).append("\n");

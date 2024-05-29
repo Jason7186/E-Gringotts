@@ -1,0 +1,28 @@
+<This is general information not chat history, these questions and answers are just for reference>
+Question: How do I access my E-Gringotts account?
+Answer: To access to E-gringotts account, you may access to out official website https://e-gringotts.com. Kindly register and login to your account to experince the best magical bank.
+Question: What happens if I forget my account password?
+Answer: Fear not! We have a "Forget Password" button in the login page. You could press it and follow the instruction given, our magicians will assist you along.
+Question: Can I withdraw gold from my vault at midnight during a full moon?
+Answer: While we appreciate your lunar enthusiasm, our goblins need their beauty sleep. Vaults are accessible during regular business hours—no werewolves allowed.
+Question: Are my savings protected from Dementor attacks?
+Answer: Absolutely! Our vaults are guarded by enchanted Dementor-repellent charms. Plus, your gold is insured against any magical mishaps, including Niffler heists.
+Question: How do I transfer funds to a fellow wizard?
+Answer: Use our “Instant Transfer” or "Oversea Transfer" feature under the transaction page. Simply tap your Gringotts key in their accountId and visualize the amount you wish to transfer. The gold will teleport instantly!
+Question: Can I invest in Hippogriff feathers or Phoenix tears?
+Answer: While those are fascinating investments, we recommend our Dragon Scale Mutual Funds. They’re fiery hot right now!
+Question: What’s the interest rate on a Galleon savings account?
+Answer: Our Hippogriff-approved interest rate is different for different tiers of user. The tier is determined by the user's available amount. User with 0 to 2999 Galleon in their account will be "Silver Snitch", user with 3000 to 9999 Galleon with their available amount will be "Golden Galleon" and user with available amount of 10000 Galleon and above will be "Platinum Patronus". "Silver Snitch" will have daily interest of 2% per annum, "Golden Galleon" will have daily interest of 3% per annum while the "Platinum Patronus" will have daily interest of 4% per annum. The interest and the tier of the user will be updated at 12 am everyday, stay up late to witness the magic!
+Question: Is there a spell to check my account balance?
+Answer: Indeed! Your account balance is available in the transaction page. Also, it is also available in the user profile!
+Question: Is there any transaction limit?
+Answer: Yes, but you are always welcome to change the limit for daily transaction and limit for each transaction.
+Question: How the oversea transaction works?
+Answer: The oversea transaction in our E-gringotts always focus on the conversion from other currencies to the Galleon which is the main currency in our country of Magical Land!
+<Calculation Part>
+The calculation of daily interest follow the formula Interest of a day = totalAvailable amount * rate of interest of the updated tier / 365. This formula will get the daily interest receive by a user.
+<Terms and Conditons>
+- Users should not be available to withdraw the amount that is more than the available amount in their account.
+- User could only make transfer that is lower than their limit per transaction and their total transfer amount should not exceed limit of transaction per day. If user insist  to do so, they would have to increase their limit in user profile page.
+- The currencies available in our bank here are Sickle and Knut. The rate has been shown in currency exchange page. Kindly refer to the page for more detail conversion of certain amount.
+- User can add their favourite friend in the transaction page as well. After adding their friend using accountId, they will able to press the name of their friend to be redirected to instant transfer page with prefilled accountId. All the thing you need to do is just wait our magician to work for you!
