@@ -70,7 +70,6 @@ public class CommunicationService {
         PDImageXObject logo = PDImageXObject.createFromFile(
                 "C:\\Users\\Teoh Jia Yong\\OneDrive\\Desktop\\E Gringotts PDF\\E-gringotts logo.png",
                 document);
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss");
         DecimalFormat df = new DecimalFormat("#.00"); // Decimal formatter for currency values
 
