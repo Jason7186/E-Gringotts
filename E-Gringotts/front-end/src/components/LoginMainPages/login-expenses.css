@@ -1,0 +1,103 @@
+.expenses-background {
+    background-image: url(..\expenses-background.png);
+    /* Update with your image path */
+    background-size: cover;
+    /* Cover the entire page */
+    background-position: relative;
+    /* Center the background image */
+    background-repeat: no-repeat;
+    /* Do not repeat the image */
+    width: '100vw';
+    height: '100vh';
+}
+
+.expenses-background h1 {
+    position: absolute;
+    margin-top: 80px;
+    margin-left: 60px;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+
+.expenses-container {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    padding-top: 30px;
+    padding-left: 30px;
+    margin-top: 135px;
+    margin-left: 60px;
+    background-color: rgba(71, 8, 90, 0.938);
+    border-radius: 15px;
+    width: 90%;
+    height: 75%;
+}
+
+.date-selection {
+    display: flex;
+    flex-direction: column;
+    background-color: #7367F0;
+    /* Lighter purple for the component backgrounds */
+    margin: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    width: 450px;
+    height: 95%;
+}
+
+.date-selection button {
+    font-size: 1.3rem;
+    margin-top: 20px;
+    margin-right: 70%;
+    border-radius: 4px;
+    font-weight: normal;
+    color: black;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.5 ease;
+}
+
+.expenditure-analysis {
+    background-color: #7367F0;
+    /* Lighter purple for the component backgrounds */
+    margin: 10px;
+    margin-right: 30px;
+    padding: 15px;
+    border-radius: 8px;
+    width: 60%;
+    height: 95%;
+}
+
+.expenditure-analysis h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+
+.expenditure-analysis canvas {
+    text-align: center;
+    height: 350px;
+    width: 350px;
+}
+
+.date-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.date-input input[type="date"] {
+    background-color: #fff;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.date-input label {
+    padding-right: 15%;
+    padding-bottom: 8px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
