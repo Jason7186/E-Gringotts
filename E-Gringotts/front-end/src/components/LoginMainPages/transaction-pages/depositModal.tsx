@@ -1,5 +1,5 @@
 import React from "react";
-import "./deposit-modal.css"; // Make sure to create this CSS file for modal styling
+import "./deposit-modal.css";
 
 interface ModalProps {
   isOpen: boolean;
