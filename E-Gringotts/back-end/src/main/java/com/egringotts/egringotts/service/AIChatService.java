@@ -50,13 +50,16 @@ public class AIChatService {
         Optional<ChatHistory> request = chatHistoryRepository.findByAccountId(currentUserAccId);
         if (!request.isEmpty()) {
             List<AIQnA> aiQnAList = request.get().getQnA();
-            List<String> role = new ArrayList<>();
-            List<String> content = new ArrayList<>();
-            for (AIQnA i : aiQnAList) {
-                role.add(i.getRole());
-                content.add(i.getContent());
+            List<String> question = new ArrayList<>();
+            List<String> response = new ArrayList<>();
+            for (int i = 0; i < aiQnAList.size(); i++) {
+                if (i % 2 == 0)
+                    question.add(aiQnAList.get(i).getContent());
+                else
+                    response.add(aiQnAList.get(i).getContent());
             }
-            return role + content.toString() + "\nand the below are the user information\n<User Information>\n";
+            return "\nThese are the question asked: " + question + "\nThese are the reponse: " + response
+                    + "\nand the below are the user information\n<User Information>\n";
         } else
             return "\nThere are no chat history between you two, below are the user information\n<User Information>\n";
     }
@@ -73,19 +76,20 @@ public class AIChatService {
         userInfo.append("User email: " + user.email() + "\n");
         userInfo.append("User available amount: " + user.availableAmount() + "\n");
         userInfo.append("User tier: " + user.userTier() + "\n");
-        userInfo.append("User debit card details: " + user.debitCardDetails().getDebitCardNumber()
-                + user.debitCardDetails().getDebitExpiryDate() + user.debitCardDetails().getDebitCardLimit() + "\n");
-        userInfo.append("User credit card details: " + user.creditCardDetails().getCreditCardLimit()
-                + user.creditCardDetails().getCreditCardNumber() + user.creditCardDetails().getCreditExpiryDate()
-                + "\n");
+        userInfo.append(
+                "User debit card details: " + " debit card number: " + user.debitCardDetails().getDebitCardNumber()
+                        + " debit card expiry date: " + user.debitCardDetails().getDebitExpiryDate()
+                        + " debit card limit: " + user.debitCardDetails().getDebitCardLimit() + "\n");
+        userInfo.append(
+                "User credit card details: " + " credit card number: " + user.creditCardDetails().getCreditCardLimit()
+                        + " credit card expiry date: " + user.creditCardDetails().getCreditCardNumber()
+                        + " credit card limit: " + user.creditCardDetails().getCreditExpiryDate() + "\n");
         for (Transaction transaction : user.transactions())
             userInfo.append("User transaction details: " + transaction.getDateTime().toString()
                     + transaction.getAmount() + transaction.getType() + transaction.getCategory() + "\n");
         for (Friend friend : user.friends())
-            userInfo.append("User's friends: " + friend.getName() + friend.getAccountId() + "\n");
-        userInfo.append("User maximum transfer limit per transaction" + user.maxLimitPerTransfer());
-        userInfo.append("User maximum transfer limit per day" + user.dailyLimit());
-        userInfo.append("User available transfer limit balance of the day" + user.dailyAvailableLimit());
+            userInfo.append("User's friends: " + " friend name: " + friend.getName() + "friend account id: "
+                    + friend.getAccountId() + "\n");
         return userInfo + "And now this is the question from the user\n<Question>\n";
     }
 

@@ -67,6 +67,7 @@ public class UserController {
             Authentication auth = authenticationManager.authenticate(authReq);
             SecurityContextHolder.getContext().setAuthentication(auth);
             String token = JwtHelper.generateToken(loginDto.getEmail());
+            userService.clearChatHistory(getLoggedInUser().accountId());
             return ResponseEntity.ok(new LoginResponse(loginDto.getEmail(), token));
         } catch (AuthenticationException e) {
             // This should return a ResponseEntity with an appropriate type that can handle
@@ -87,10 +88,11 @@ public class UserController {
     }
 
     @PostMapping("/user/dailyLimit")
-    public ResponseEntity<?> updateDailyLimit (@RequestBody DailyLimitUpdateRequest dailyLimitUpdateRequest) {
+    public ResponseEntity<?> updateDailyLimit(@RequestBody DailyLimitUpdateRequest dailyLimitUpdateRequest) {
         try {
             User currentLoggedUser = getLoggedInUser();
-            if (Objects.equals(currentLoggedUser.dailyLimit(), dailyLimitUpdateRequest.getNewDailyLimit())) throw new RuntimeException("Same limit does not require update");
+            if (Objects.equals(currentLoggedUser.dailyLimit(), dailyLimitUpdateRequest.getNewDailyLimit()))
+                throw new RuntimeException("Same limit does not require update");
             userService.updateDailyLimit(currentLoggedUser, dailyLimitUpdateRequest.getNewDailyLimit());
             return ResponseEntity.ok("Daily Limit updated successfully");
         } catch (Exception e) {
@@ -99,10 +101,13 @@ public class UserController {
     }
 
     @PostMapping("user/maxTransferLimit")
-    public ResponseEntity<?> updateMaxTransferLimit(@RequestBody MaxTransferLimitUpdateRequest maxTransferLimitUpdateRequest) {
+    public ResponseEntity<?> updateMaxTransferLimit(
+            @RequestBody MaxTransferLimitUpdateRequest maxTransferLimitUpdateRequest) {
         try {
             User currentLoggedUser = getLoggedInUser();
-            if (Objects.equals(currentLoggedUser.maxLimitPerTransfer(), maxTransferLimitUpdateRequest.getNewMaxTransferLimit())) throw new RuntimeException("Same limit does not require update");
+            if (Objects.equals(currentLoggedUser.maxLimitPerTransfer(),
+                    maxTransferLimitUpdateRequest.getNewMaxTransferLimit()))
+                throw new RuntimeException("Same limit does not require update");
             userService.updateMaxLimit(currentLoggedUser, maxTransferLimitUpdateRequest.getNewMaxTransferLimit());
             return ResponseEntity.ok("Max Transfer Limit Updated Successfully");
         } catch (Exception e) {
@@ -213,7 +218,8 @@ public class UserController {
         try {
             User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
             userService.changeUserPassword(user, newPassword);
-            // Optionally, delete the OTP from the database if it's not automatically handled by TTL
+            // Optionally, delete the OTP from the database if it's not automatically
+            // handled by TTL
             otpService.deleteOTP(email);
             return ResponseEntity.ok("Password has been successfully reset.");
         } catch (Exception e) {

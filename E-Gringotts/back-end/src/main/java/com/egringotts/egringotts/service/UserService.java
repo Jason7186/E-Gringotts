@@ -59,8 +59,7 @@ public class UserService {
                 new CreditCardDetails(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                Collections.singletonList(new Role("USER"))
-        );
+                Collections.singletonList(new Role("USER")));
 
         ChatHistory chatHistory = new ChatHistory(generatedAccountId, new ArrayList<>());
 
@@ -68,7 +67,6 @@ public class UserService {
         chatHistoryRepository.save(chatHistory);
         return userRepository.save(user);
     }
-
 
     private String generateAccountId() {
         MongoDatabase database = mongoClient.getDatabase("bank-api-db");
@@ -84,7 +82,6 @@ public class UserService {
         int newAccId = Integer.parseInt(lastAccountId) + 1;
         return String.format("%08d", newAccId);
     }
-
 
     private int calculateAge(LocalDate dateOfBirth) {
         return (LocalDate.now().getYear() - dateOfBirth.getYear());
@@ -130,6 +127,7 @@ public class UserService {
         Update update = new Update().set("dailyAvailableLimit", newDailyAvailableLimit);
         mongoTemplate.updateFirst(query, update, User.class);
     }
+
     public void updateDailyLimit(User user, double newDailyLimit) throws Exception {
         Query query = new Query(Criteria.where("id").is(user.id()));
         Update update = new Update().set("dailyLimit", newDailyLimit).set("dailyAvailableLimit", newDailyLimit);
@@ -153,8 +151,7 @@ public class UserService {
                 user.availableAmount(),
                 user.userTier(),
                 user.dailyLimit(),
-                user.maxLimitPerTransfer()
-        );
+                user.maxLimitPerTransfer());
     }
 
     public AdminDashboardDto getAdminDashBoard(String id) {
@@ -168,7 +165,7 @@ public class UserService {
         long overseaTransferPerDay = transactionsToday.getOrDefault("Oversea Transfer", 0L);
 
         Map<String, Long> userTiersCount = getUserTiersCount();
-        long silverCount = userTiersCount.getOrDefault("Silver Snitch" , 0L);
+        long silverCount = userTiersCount.getOrDefault("Silver Snitch", 0L);
         long goldCount = userTiersCount.getOrDefault("Golden Galleon", 0L);
         long platinumCount = userTiersCount.getOrDefault("Platinum Patronus", 0L);
 
@@ -189,8 +186,7 @@ public class UserService {
                 overseaTransferPerDay,
                 silverCount,
                 goldCount,
-                platinumCount
-        );
+                platinumCount);
     }
 
     public Map<String, Long> getUserTiersCount() {
@@ -198,7 +194,7 @@ public class UserService {
 
         // Correcting the field name to "userTier" for the aggregation
         List<Bson> aggregationStages = List.of(
-                Aggregates.group("$userTier", Accumulators.sum("count", 1))  // Grouping documents by 'userTier' field
+                Aggregates.group("$userTier", Accumulators.sum("count", 1)) // Grouping documents by 'userTier' field
         );
 
         // Execute the aggregation
@@ -213,7 +209,6 @@ public class UserService {
 
         return tiersCount;
     }
-
 
     public long getUserTotal() {
         return userRepository.count();
@@ -230,16 +225,14 @@ public class UserService {
 
         // Match transactions within the date range
         MatchOperation matchOperation = Aggregation.match(
-                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate)
-        );
+                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate));
 
         // Unwind transactions array
         UnwindOperation unwindOperation = Aggregation.unwind("transactions");
 
         // Match the transaction date again after unwinding
         MatchOperation matchTransactionDate = Aggregation.match(
-                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate)
-        );
+                Criteria.where("transactions.dateTime").gte(startDate).lt(endDate));
 
         // Group by transactionId to ensure each transaction is counted once
         GroupOperation groupByTransactionId = group("transactions.transactionId")
@@ -259,8 +252,7 @@ public class UserService {
                 matchTransactionDate,
                 groupByTransactionId,
                 groupByType,
-                projectionOperation
-        );
+                projectionOperation);
 
         // Execute aggregation
         AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "userInfo", Document.class);
@@ -282,5 +274,12 @@ public class UserService {
         update.set("password", encodedPassword);
         Query query = new Query(Criteria.where("id").is(user.id()));
         mongoTemplate.updateFirst(query, update, User.class);
+    }
+
+    public void clearChatHistory(String accountId) {
+        Optional<ChatHistory> request = chatHistoryRepository.findByAccountId(accountId);
+        ChatHistory chatHistory = request.get();
+        chatHistory.setQnA(Collections.emptyList());
+        chatHistoryRepository.save(chatHistory);
     }
 }

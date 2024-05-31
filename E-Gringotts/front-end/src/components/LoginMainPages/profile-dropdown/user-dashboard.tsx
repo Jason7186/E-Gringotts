@@ -43,7 +43,7 @@ const UserDashboard = () => {
         setAccountId(data.accountId);
         setDob(data.dateOfBirth);
         setEmail(data.email);
-        setAvailableAmount(data.availableAmount);
+        setAvailableAmount(data.availableAmount.toFixed(2));
         setTier(data.userTier);
         setDailyLimit(data.limitPerDay)
         setTransferLimit(data.limitPerTransactions)
@@ -96,7 +96,7 @@ const UserDashboard = () => {
               Email: <span>{email}</span>
             </p>
             <p>
-              Available Amount: <span>{availableAmount}</span>
+              Available Amount: <span>{availableAmount}</span> Galleons
             </p>
             <p>
               Tier: <span>{tier}</span>

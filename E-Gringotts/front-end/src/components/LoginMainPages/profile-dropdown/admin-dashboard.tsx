@@ -54,7 +54,7 @@ const AdminDashboard = () => {
         setAccountId(data.accountId);
         setDob(data.dateOfBirth);
         setEmail(data.email);
-        setAvailableAmount(data.availableAmount);
+        setAvailableAmount(data.availableAmount.toFixed(2));
         setTier(data.userTier);
         setTotalUser(data.userTotalNum);
         setTransactionPerDay(data.transactionsTotalPerDay);
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
               Email : <span>{email}</span>
             </p>
             <p>
-              Available Amount : <span>{availableAmount}</span>
+              Available Amount : <span>{availableAmount}</span> Galleons
             </p>
             <p>
               Tier : <span>{tier}</span>
