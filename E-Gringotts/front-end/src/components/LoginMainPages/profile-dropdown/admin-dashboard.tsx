@@ -114,7 +114,7 @@ const AdminDashboard = () => {
               Available Amount : <span>{availableAmount}</span> Galleons
             </p>
             <p>
-              Tier : <span>{tier}</span>
+              Tier : <span>Goblin</span>
             </p>
             <p>
               Transaction Limit: <span>{transferLimit}</span>
