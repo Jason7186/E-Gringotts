@@ -69,27 +69,28 @@ public class AIChatService {
         Optional<User> request = userRepository.findByAccountId(currentUserAccId);
         User user = request.get();
         StringBuilder userInfo = new StringBuilder();
-        userInfo.append("User name: " + user.name() + "\n");
-        userInfo.append("User account id: " + user.accountId() + "\n");
-        userInfo.append("User age: " + user.age() + "\n");
-        userInfo.append("User Date Of Birth: " + user.dateOfBirth() + "\n");
-        userInfo.append("User email: " + user.email() + "\n");
-        userInfo.append("User available amount: " + user.availableAmount() + "\n");
-        userInfo.append("User tier: " + user.userTier() + "\n");
-        userInfo.append(
-                "User debit card details: " + " debit card number: " + user.debitCardDetails().getDebitCardNumber()
-                        + " debit card expiry date: " + user.debitCardDetails().getDebitExpiryDate()
-                        + " debit card limit: " + user.debitCardDetails().getDebitCardLimit() + "\n");
-        userInfo.append(
-                "User credit card details: " + " credit card number: " + user.creditCardDetails().getCreditCardLimit()
-                        + " credit card expiry date: " + user.creditCardDetails().getCreditCardNumber()
-                        + " credit card limit: " + user.creditCardDetails().getCreditExpiryDate() + "\n");
+        userInfo.append("User name: ").append(user.name()).append("\n");
+        userInfo.append("User account id: ").append(user.accountId()).append("\n");
+        userInfo.append("User age: ").append(user.age()).append("\n");
+        userInfo.append("User Date Of Birth: ").append(user.dateOfBirth()).append("\n");
+        userInfo.append("User email: ").append(user.email()).append("\n");
+        userInfo.append("User available amount: ").append(user.availableAmount()).append("\n");
+        userInfo.append("User tier: ").append(user.userTier()).append("\n");
+        userInfo.append("User debit card details: " + " debit card number: ")
+                .append(user.debitCardDetails().getDebitCardNumber()).append(" debit card expiry date: ")
+                .append(user.debitCardDetails().getDebitExpiryDate()).append(" debit card limit: ")
+                .append(user.debitCardDetails().getDebitCardLimit()).append("\n");
+        userInfo.append("User credit card details: " + " credit card number: ")
+                .append(user.creditCardDetails().getCreditCardNumber()).append(" credit card expiry date: ")
+                .append(user.creditCardDetails().getCreditExpiryDate()).append(" credit card limit: ")
+                .append(user.creditCardDetails().getCreditCardLimit()).append("\n");
         for (Transaction transaction : user.transactions())
-            userInfo.append("User transaction details: " + transaction.getDateTime().toString()
-                    + transaction.getAmount() + transaction.getType() + transaction.getCategory() + "\n");
+            userInfo.append("User transaction details: ").append(transaction.getDateTime().toString())
+                    .append(transaction.getAmount()).append(transaction.getType()).append(transaction.getCategory())
+                    .append("\n");
         for (Friend friend : user.friends())
-            userInfo.append("User's friends: " + " friend name: " + friend.getName() + "friend account id: "
-                    + friend.getAccountId() + "\n");
+            userInfo.append("User's friends: " + " friend name: ").append(friend.getName())
+                    .append("friend account id: ").append(friend.getAccountId()).append("\n");
         return userInfo + "And now this is the question from the user\n<Question>\n";
     }
 
