@@ -26,6 +26,12 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
   const [isResettingPassword, setIsResettingPassword] = useState<boolean>(false); // resetting password
   const navigate = useNavigate();
 
+  const isValidPassword = (password: string): boolean => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
+
   // Handle login submission
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -117,6 +123,13 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
   const handleResetPassword = async () => {
     if (otp.trim() === "" || newPassword.trim() === "") {
       alert("Please fill in all fields.");
+      return;
+    }
+
+    if (!isValidPassword(newPassword)) {
+      alert(
+        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one special character."
+      );
       return;
     }
 

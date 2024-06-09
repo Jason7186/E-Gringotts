@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+
 @RestController
 @RequestMapping("")
 public class AIChatController {
@@ -23,10 +24,8 @@ public class AIChatController {
     @Autowired
     private RestTemplate template;
     private final AIChatService aiChatService;
-    private String OriContent = "You are chat bot in a Harry Potter universe named Owl Post, who are a respectful and friendly E-gringotts assistant to answer user inquiries."
-            +
-            " Use only the following information I give to answer the question. Do not use any other information, and remember to be more friendly and add an magical owl emoji and shiny emoji at the end of the response."
-            +
+    private String OriContent = "You are chat bot in a Harry Potter universe named Owl Post, who are a respectful and friendly E-gringotts assistant to answer user inquiries." +
+            " Use only the following information I give to answer the question. Do not use any other information, and remember to be more friendly and add an magical owl emoji and shiny emoji at the end of the response." +
             "\nThese are the general information for our E-gringotts bank:" +
             "\n<General Information>\n";
 
@@ -37,8 +36,7 @@ public class AIChatController {
     @GetMapping("/login/help-chat")
     public ResponseEntity<String> chatForUser(@RequestParam String prompt) {
         try {
-            String fullContent = OriContent + aiChatService.getGeneralInformation() + aiChatService.getChatHistory()
-                    + aiChatService.getUserInformation() + prompt;
+            String fullContent = OriContent+aiChatService.getGeneralInformation()+aiChatService.getChatHistory()+aiChatService.getUserInformation()+prompt;
             AIChatRequest request = new AIChatRequest(model, fullContent);
             AIChatResponse response = template.postForObject(url, request, AIChatResponse.class);
             aiChatService.addUserQuestion(prompt);
@@ -60,7 +58,7 @@ public class AIChatController {
     @GetMapping("/help-chat")
     public ResponseEntity<String> chatForNonUser(@RequestParam String prompt) {
         try {
-            String fullContent = OriContent + aiChatService.getGeneralInformation() + prompt;
+            String fullContent = OriContent+aiChatService.getGeneralInformation()+prompt;
             AIChatRequest request = new AIChatRequest(model, fullContent);
             AIChatResponse response = template.postForObject(url, request, AIChatResponse.class);
 
